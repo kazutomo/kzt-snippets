@@ -1,0 +1,9 @@
+
+iverilog -o foo c_tb.v c.v
+vvp foo
+
+gtkwave test.vcd 
+
+click 'test', 'c1',  drag signals to the Signals box
+
+see http://iverilog.wikia.com/wiki/GTKWAVE
