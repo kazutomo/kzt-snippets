@@ -5,16 +5,19 @@ import scala.io.Source
 object FileIO {
   def main(args: Array[String]) {
 
-    for (a <- args.drop(1)) {
-      println(a)
-    }
-
+    println("* Wriing to a file using Scala PrintWriter")
     val fn = "tmpoutput.txt"
     val w = new PrintWriter(new File(fn))
-    w.write("Hey!\n")
+    w.write("""Hey!
+Second line
+Third line
+""")
     w.close()
 
-    // reading in java way
+    println("* Reading a file in Scala Source.fromFile")
+    Source.fromFile(fn).foreach { print }
+
+    println("* Reading a file using Java FileReader")
     val r = new FileReader(fn)
     var str : String = ""
     var c : Int = 0
@@ -29,10 +32,5 @@ object FileIO {
     }
     r.close()
     print(str)
-
-    // reading
-    Source.fromFile(fn).foreach {
-      print
-    }
   }
 }
