@@ -6,7 +6,7 @@ object MM extends App {
     }
   }
 
-  val a = Array(Array(1,2,3), Array(4,5,4), Array(3,2,1))
+  val a = Array(Array(3,2,1), Array(2,1,3), Array(1,0,3))
 
   val c = mmul(a,a)
 
