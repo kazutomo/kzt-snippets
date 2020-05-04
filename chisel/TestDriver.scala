@@ -8,26 +8,10 @@ package foobar
 import chisel3.iotesters
 import chisel3.iotesters.{Driver, PeekPokeTester}
 
-class RevUnitTester(c: Rev) extends PeekPokeTester(c) {
-
-  val seed = 123
-  val r = new scala.util.Random(seed)
-
-  for (i <- 0 to 10) {
-    val input = r.nextInt(255)
-    poke(c.io.in, input)
-    val output = peek(c.io.out).toInt // peek() returns bigInt
-
-    printf("%08d => %08d\n",
-      input.toBinaryString.toInt,
-      output.toBinaryString.toInt)
-  }
-}
-
 object TestMain extends App {
   // component target list.
   val targetlist = List(
-    "rev"
+    "rev", "dynamic"
   )
 
   val a = if (args.length > 0) args(0) else "rev"
@@ -54,6 +38,11 @@ object TestMain extends App {
       mode match {
         case "verilog" => chisel3.Driver.execute(args, () => new Rev(bitwidth))
         case _ => iotesters.Driver.execute(args, () => new Rev(bitwidth)) {c => new RevUnitTester(c) }
+      }
+    case "dynamic" =>
+      mode match {
+        case "verilog" => chisel3.Driver.execute(args, () => new DynamicBus())
+        case _ => iotesters.Driver.execute(args, () => new DynamicBus()) {c => new DynamicBusUnitTester(c) }
       }
   }
 }
