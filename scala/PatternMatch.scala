@@ -1,6 +1,27 @@
 
 object PatternMatch extends App {
 
+  type AppOpts = Map[String, String]
+
+  def usage() = println("Usage: PatternMatch [-h] [-x int] [-y int] filename")
+
+  def nextopts(l: List[String], m: AppOpts) : AppOpts = {
+    l match {
+      case Nil => m
+      case "-h" :: tail => usage() ; sys.exit(1)
+      case "-x" :: istr :: tail => nextopts(tail, m ++ Map("x" -> istr ))
+      case "-y" :: istr :: tail => nextopts(tail, m ++ Map("y" -> istr ))
+      case str :: Nil => m ++ Map("filename" -> str)
+      case unknown => {
+        println("Unknown: " + unknown)
+        sys.exit(1)
+      }
+    }
+  }
+  val opts = nextopts(args.toList, Map())
+  println(opts)
+
+
   def sizeof(x: Any) = x match {
     case b: Byte => 1
     case s: Short => 2
