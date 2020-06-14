@@ -4,7 +4,7 @@ BINS=$(SRCS:.rs=)
 
 % : %.rs
 	rustc $<
-
+	./$@
 
 clean:
 	rm -f $(BINS)
