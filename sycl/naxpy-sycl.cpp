@@ -47,7 +47,7 @@ static void runkernel(void)
 
 int main()
 {
-    runkernel<float>();
+    runkernel<double>();
 
     return 0;
 }
