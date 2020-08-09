@@ -41,10 +41,10 @@ object TestMain extends App {
       }
 
     case "xnor" =>
-      val bitwidth = 8
+      val ninputs = 8
       mode match {
-        case "verilog" => chisel3.Driver.execute(args, () => new XnorPop(bitwidth))
-        case _ => iotesters.Driver.execute(args, () => new XnorPop(bitwidth)) {c => new XnorPopUnitTester(c) }
+        case "verilog" => chisel3.Driver.execute(args, () => new XnorPop(ninputs))
+        case _ => iotesters.Driver.execute(args, () => new XnorPop(ninputs)) {c => new XnorPopUnitTester(c) }
       }
 
 

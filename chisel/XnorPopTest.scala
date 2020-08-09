@@ -9,25 +9,28 @@ class XnorPopUnitTester(c: XnorPop) extends PeekPokeTester(c) {
 
   val seed = 123
   val r = new scala.util.Random(seed)
-  val ntests = 16
+  val ntests = 4
 
-  val bitwidth =  c.bw
-  val mask = (1 << bitwidth) - 1
+  val ninputs =  c.ninputs
+  val mask = (1 << ninputs) - 1
 
   for (i <- 0 until ntests) {
-    val a = r.nextInt & mask
-    val b = r.nextInt & mask
-    poke(c.io.in_a, a)
-    poke(c.io.in_b, b)
+    val vin = r.nextInt & mask
+    val weights = List.tabulate(ninputs) { i => r.nextInt & mask }
+    poke(c.io.vin, vin)
+    for(j <- 0 until ninputs) {
+      poke(c.io.weights(j), weights(j))
+    }
+    step(1)
+    for(j <- 0 until ninputs) {
+      val output = peek(c.io.vout(j)).toInt // peek() returns bigInt
 
-    val output = peek(c.io.out).toInt // peek() returns bigInt
-
-    val ref = (~(a^b)) & mask
-    val reftmp = List.tabulate(8) { i => if ((ref & (1<<i))>0) 1 else 0 }
-    val refcnt = reftmp.reduce {_ + _}
-
-    expect(c.io.out, refcnt)
-
-    printf("%4d => cnt=%4d (%4d)\n",  i, output, refcnt)
+      val ref = (~(vin^weights(j))) & mask
+      val reftmp = List.tabulate(ninputs) { i => if ((ref & (1<<i))>0) 1 else 0 }
+      val refcnt = reftmp.reduce {_ + _}
+      expect(c.io.vout(j), refcnt)
+      printf("%3d/%3d => cnt=%3d (%3d)\n",  i, j, output, refcnt)
+    }
+    printf("\n")
   }
 }
