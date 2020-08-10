@@ -27,7 +27,7 @@ class XnorPopUnitTester(c: XnorPop) extends PeekPokeTester(c) {
 
       val ref = (~(vin^weights(j))) & mask
       val reftmp = List.tabulate(ninputs) { i => if ((ref & (1<<i))>0) 1 else 0 }
-      val refcnt = reftmp.reduce {_ + _}
+      val refcnt = reftmp.reduce {_ + _} - (ninputs>>1)
       expect(c.io.vout(j), refcnt)
       printf("%3d/%3d => cnt=%3d (%3d)\n",  i, j, output, refcnt)
     }
