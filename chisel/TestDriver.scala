@@ -11,7 +11,7 @@ import chisel3.iotesters.{Driver, PeekPokeTester}
 object TestMain extends App {
   // component target list.
   val targetlist = List(
-    "rev", "dynamic"
+    "rev", "dynamic", "xnor"
   )
 
   val a = if (args.length > 0) args(0) else "rev"
@@ -39,6 +39,15 @@ object TestMain extends App {
         case "verilog" => chisel3.Driver.execute(args, () => new Rev(bitwidth))
         case _ => iotesters.Driver.execute(args, () => new Rev(bitwidth)) {c => new RevUnitTester(c) }
       }
+
+    case "xnor" =>
+      val ninputs = 8
+      mode match {
+        case "verilog" => chisel3.Driver.execute(args, () => new XnorPop(ninputs))
+        case _ => iotesters.Driver.execute(args, () => new XnorPop(ninputs)) {c => new XnorPopUnitTester(c) }
+      }
+
+
     case "dynamic" =>
       mode match {
         case "verilog" => chisel3.Driver.execute(args, () => new DynamicBus())
