@@ -32,6 +32,8 @@ static void runkernel(void)
 
     queue q;
 
+    cout << "Device: " << q.get_device().get_info<cl::sycl::info::device::name>() << std::endl;
+
     for(int i = 0; i < nelems; i++) {
 	y[i] = 0.0;
 	x[i] = i;
