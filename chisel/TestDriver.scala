@@ -11,7 +11,7 @@ import chisel3.iotesters.{Driver, PeekPokeTester}
 object TestMain extends App {
   // component target list.
   val targetlist = List(
-    "rev", "dynamic", "xnor"
+    "rev", "concat", "xnor"
   )
 
   val a = if (args.length > 0) args(0) else "rev"
@@ -47,11 +47,10 @@ object TestMain extends App {
         case _ => iotesters.Driver.execute(args, () => new XnorPop(ninputs)) {c => new XnorPopUnitTester(c) }
       }
 
-
-    case "dynamic" =>
+    case "concat" =>
       mode match {
-        case "verilog" => chisel3.Driver.execute(args, () => new DynamicBus())
-        case _ => iotesters.Driver.execute(args, () => new DynamicBus()) {c => new DynamicBusUnitTester(c) }
+        case "verilog" => chisel3.Driver.execute(args, () => new ConcatVecs())
+        case _ => iotesters.Driver.execute(args, () => new ConcatVecs()) {c => new ConcatVecsUnitTester(c) }
       }
   }
 }
