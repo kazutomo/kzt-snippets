@@ -11,14 +11,26 @@ class SRMemUnitTester(c: SRMem) extends PeekPokeTester(c) {
   val unused_entries = 6
   val wid = c.wid
 
-  poke(c.io.wEnable, 1)
+  def datafunc(a: Int) = a + 100
 
-  for (i <- 0 until n_entries - unused_entries) {
-    poke(c.io.wData, i + 100)
-    expect(c.io.wCnt, i)
-    step(1)
+  def writepat() {
+    poke(c.io.wEnable, 1)
+    for (i <- 0 until n_entries - unused_entries) {
+      poke(c.io.wData, datafunc(i))
+      expect(c.io.wCnt, i)
+      step(1)
+    }
+    poke(c.io.wEnable, 0)
   }
-  poke(c.io.wEnable, 0)
+  writepat()
+  poke(c.io.wCntReset, 1)
+  step(1)
+  poke(c.io.wCntReset, 0)
+  step(1)
+  expect(c.io.wCnt, 0)
+
+  writepat()
+  step(1)
 
   val n = peek(c.io.wCnt).toInt
 
@@ -26,7 +38,7 @@ class SRMemUnitTester(c: SRMem) extends PeekPokeTester(c) {
     poke(c.io.rAddr, i)
     step(1)
     if (i < n) {
-      expect(c.io.rData, i + 100)
+      expect(c.io.rData, datafunc(i))
     } else {
       expect(c.io.rData, 0)
     }
