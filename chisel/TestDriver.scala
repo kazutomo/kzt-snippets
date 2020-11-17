@@ -39,6 +39,11 @@ object TestMain extends App {
         case "verilog" => chisel3.Driver.execute(args, () => new Rev(bitwidth))
         case _ => iotesters.Driver.execute(args, () => new Rev(bitwidth)) {c => new RevUnitTester(c) }
       }
+    case "foo" =>
+      mode match {
+        case "verilog" => chisel3.Driver.execute(args, () => new Foo())
+        case _ => iotesters.Driver.execute(args, () => new Foo()) {c => new FooUnitTester(c) }
+      }
 
     case "xnor" =>
       val ninputs = 8
