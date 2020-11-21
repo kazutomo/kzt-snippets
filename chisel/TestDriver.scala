@@ -11,7 +11,7 @@ import chisel3.iotesters.{Driver, PeekPokeTester}
 object TestMain extends App {
   // component target list.
   val targetlist = List(
-    "rev", "concat", "xnor", "clz", "srmem", "nerd"
+    "rev", "concat", "xnor", "clz", "srmem", "nerd", "count"
   )
 
   val a = if (args.length > 0) args(0) else "rev"
@@ -43,6 +43,11 @@ object TestMain extends App {
       mode match {
         case "verilog" => chisel3.Driver.execute(args, () => new Foo())
         case _ => iotesters.Driver.execute(args, () => new Foo()) {c => new FooUnitTester(c) }
+      }
+    case "count" =>
+      mode match {
+        case "verilog" => chisel3.Driver.execute(args, () => new Counter())
+        case _ => iotesters.Driver.execute(args, () => new Counter()) {c => new CounterUnitTester(c) }
       }
 
     case "nerd" =>
