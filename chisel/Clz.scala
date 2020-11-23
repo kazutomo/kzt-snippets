@@ -3,6 +3,7 @@ package foobar
 import chisel3._
 import chisel3.util._   // needed for switch
 
+// Counting leading zeros for two-bit unsigned integer
 class Clz2() extends Module {
   val io = IO(new Bundle {
     val in = Input(UInt(2.W))
@@ -19,32 +20,8 @@ class Clz2() extends Module {
   }
 }
 
-
-
-
-class Clz4() extends Module {
-  val io = IO(new Bundle {
-    val in = Input(UInt(4.W))
-    val out = Output(UInt(3.W))
-  })
-
-  val c0 = Module(new Clz2())
-  val c1 = Module(new Clz2())
-
-  c0.io.in := io.in(1,0)
-  c1.io.in := io.in(3,2)
-
-  io.out := "b000".U
-  when( c1.io.out(1) && c0.io.out(1) ) {
-    io.out := "b100".U
-  } .elsewhen( c1.io.out(1) === 0.U ) {
-    io.out := Cat("b0".U, c1.io.out)
-  } .elsewhen( c1.io.out(1) === 1.U ) {
-    io.out := Cat("b01".U, c0.io.out(0,0))
-  }
-}
-
-// crafting a paramerized version of Clz
+// A parameterized version of counting leading-zeros
+// note: nb is the power of two number that is greater-equal than 4.
 class ClzParam(nb: Int = 16) extends Module {
   val half = nb >> 1
   val lognb = log2Ceil(nb)
@@ -69,6 +46,31 @@ class ClzParam(nb: Int = 16) extends Module {
     io.out := Cat("b01".U, c0.io.out(lognb-2,0))
   }
 }
+
+// below are old hard-coded version
+
+class Clz4() extends Module {
+  val io = IO(new Bundle {
+    val in = Input(UInt(4.W))
+    val out = Output(UInt(3.W))
+  })
+
+  val c0 = Module(new Clz2())
+  val c1 = Module(new Clz2())
+
+  c0.io.in := io.in(1,0)
+  c1.io.in := io.in(3,2)
+
+  io.out := "b000".U
+  when( c1.io.out(1) && c0.io.out(1) ) {
+    io.out := "b100".U
+  } .elsewhen( c1.io.out(1) === 0.U ) {
+    io.out := Cat("b0".U, c1.io.out)
+  } .elsewhen( c1.io.out(1) === 1.U ) {
+    io.out := Cat("b01".U, c0.io.out(0,0))
+  }
+}
+
 
 class Clz8() extends Module {
   val io = IO(new Bundle {
