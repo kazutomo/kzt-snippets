@@ -64,9 +64,14 @@ object TestMain extends App {
       }
 
     case "clz" =>
+      val nb = 16
       mode match {
+        case "verilog" => chisel3.Driver.execute(args, () => new ClzParam(nb))
+        case _ => iotesters.Driver.execute(args, () => new ClzParam(nb)) {c => new ClzUnitTester(c) }
+          /*
         case "verilog" => chisel3.Driver.execute(args, () => new Clz16())
-        case _ => iotesters.Driver.execute(args, () => new Clz16()) {c => new ClzUnitTester(c) }
+        case _ => iotesters.Driver.execute(args, () => new Clz16()) {c => new ClzUnitTester(c) } */
+
       }
 
     case "srmem" =>

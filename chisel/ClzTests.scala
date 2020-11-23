@@ -3,7 +3,9 @@ package foobar
 import chisel3._
 import chisel3.iotesters.PeekPokeTester
 
-class ClzUnitTester(c: Clz16) extends PeekPokeTester(c) {
+class ClzUnitTester(c: ClzParam) extends PeekPokeTester(c) {
+
+  // val nb = c.nb
 
   val h = 1<<15
 

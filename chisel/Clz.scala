@@ -19,6 +19,9 @@ class Clz2() extends Module {
   }
 }
 
+
+
+
 class Clz4() extends Module {
   val io = IO(new Bundle {
     val in = Input(UInt(4.W))
@@ -38,6 +41,32 @@ class Clz4() extends Module {
     io.out := Cat("b0".U, c1.io.out)
   } .elsewhen( c1.io.out(1) === 1.U ) {
     io.out := Cat("b01".U, c0.io.out(0,0))
+  }
+}
+
+// crafting a paramerized version of Clz
+class ClzParam(nb: Int = 16) extends Module {
+  val half = nb >> 1
+  val lognb = log2Ceil(nb)
+
+  val io = IO(new Bundle {
+    val in = Input(UInt(nb.W))
+    val out = Output(UInt((lognb+1).W))
+  })
+
+  val c0 = if (half==2) Module(new Clz2()) else Module(new ClzParam(half))
+  val c1 = if (half==2) Module(new Clz2()) else Module(new ClzParam(half))
+
+  c0.io.in := io.in(half-1, 0)
+  c1.io.in := io.in(nb-1  , half)
+
+  io.out := 0.U((lognb+1).W)
+  when( c1.io.out(lognb-1) && c0.io.out(lognb-1) ) {
+    io.out := Cat("b1".U, 0.U(lognb.W))
+  } .elsewhen( c1.io.out(lognb-1) === 0.U ) {
+    io.out := Cat("b0".U, c1.io.out)
+  } .elsewhen( c1.io.out(lognb-1) === 1.U ) {
+    io.out := Cat("b01".U, c0.io.out(lognb-2,0))
   }
 }
 
