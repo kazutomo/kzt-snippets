@@ -24,6 +24,10 @@ class Clz2() extends Module {
 // note: nb is the power of two number that is greater-equal than 4.
 class ClzParam(nb: Int = 16) extends Module {
 
+  def ispow2(x : Int) : Boolean = (x!=0) && (x & (x-1)) == 0
+
+  assert( (nb>2) && ispow2(nb) )
+
   val half = nb >> 1
   val lognb = log2Ceil(nb)
 
