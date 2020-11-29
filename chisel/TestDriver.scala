@@ -28,11 +28,11 @@ object TestMain extends App {
 
   println(f"MODE=$mode TARGET=$target")
 
+  // TODO: make this block concise since there are lots of repeating here. 
   target match {
     case "list" =>
       println("*target list")
       for (t <- targetlist)  println(t)
-
     case "rev" =>
       val bitwidth = 8
       mode match {
@@ -49,7 +49,6 @@ object TestMain extends App {
         case "verilog" => chisel3.Driver.execute(args, () => new Counter())
         case _ => iotesters.Driver.execute(args, () => new Counter()) {c => new CounterUnitTester(c) }
       }
-
     case "nerd" =>
       mode match {
         case "verilog" => chisel3.Driver.execute(args, () => new NerdCounter())
@@ -62,24 +61,17 @@ object TestMain extends App {
         case "verilog" => chisel3.Driver.execute(args, () => new XnorPop(ninputs))
         case _ => iotesters.Driver.execute(args, () => new XnorPop(ninputs)) {c => new XnorPopUnitTester(c) }
       }
-
     case "clz" =>
       val nb = 16
       mode match {
         case "verilog" => chisel3.Driver.execute(args, () => new ClzParam(nb))
         case _ => iotesters.Driver.execute(args, () => new ClzParam(nb)) {c => new ClzUnitTester(c) }
-          /*
-        case "verilog" => chisel3.Driver.execute(args, () => new Clz16())
-        case _ => iotesters.Driver.execute(args, () => new Clz16()) {c => new ClzUnitTester(c) } */
-
       }
-
     case "srmem" =>
       mode match {
         case "verilog" => chisel3.Driver.execute(args, () => new SRMem())
         case _ => iotesters.Driver.execute(args, () => new SRMem()) {c => new SRMemUnitTester(c) }
       }
-
     case "concat" =>
       mode match {
         case "verilog" => chisel3.Driver.execute(args, () => new ConcatVecs())

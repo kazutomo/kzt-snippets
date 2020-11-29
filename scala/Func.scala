@@ -9,9 +9,9 @@ object Func {
     println(highorder(v2s, 123) + "\n")
 
     // anonymous function
-    var mul = (x: Double, y: Double) => x * y
+    val mul = (x: Double, y: Double) => x * y
     println(mul(3,2))
-    var userDir = () => {System.getProperty("user.dir")}
+    val userDir = () => {System.getProperty("user.dir")}
     println(userDir)
 
     // partially
