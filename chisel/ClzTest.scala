@@ -37,3 +37,16 @@ class ClzUnitTester(c: ClzParam) extends PeekPokeTester(c) {
     step(1)
   }
 }
+
+object ClzTest {
+  val nb = 16
+  val dut = () => new ClzParam(nb)
+  val tester = c => new ClzUnitTester(c)
+
+  def run(args: Array[String], verilogonly: Boolean)  {
+    if (verilogonly)
+      chisel3.Driver.execute(args, dut)
+    else
+      iotesters.Driver.execute(args, dut) {tester}
+  }
+}

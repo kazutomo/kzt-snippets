@@ -24,3 +24,16 @@ class RevUnitTester(c: Rev) extends PeekPokeTester(c) {
     // use c.bw
   }
 }
+
+object RevTest {
+  val bitwidth = 8
+  val dut = () => new Rev(bitwidth)
+  val tester = c => new RevUnitTester(c)
+
+  def run(args: Array[String], verilogonly: Boolean)  {
+    if (verilogonly)
+      chisel3.Driver.execute(args, dut)
+    else
+      iotesters.Driver.execute(args, dut) {tester}
+  }
+}

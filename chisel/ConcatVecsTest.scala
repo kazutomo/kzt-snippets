@@ -1,6 +1,8 @@
 package foobar
 
-import chisel3.iotesters._
+import chisel3.util._
+import chisel3.iotesters
+import chisel3.iotesters.{Driver, PeekPokeTester}
 
 class ConcatVecsUnitTester(c: ConcatVecs) extends PeekPokeTester(c) {
 
@@ -36,5 +38,17 @@ class ConcatVecsUnitTester(c: ConcatVecs) extends PeekPokeTester(c) {
       print(f"$tmp ")
     }
     println()
+  }
+}
+
+object ConcatVecsTest {
+  val dut = () => new ConcatVecs()
+  val tester = c => new ConcatVecsUnitTester(c)
+
+  def run(args: Array[String], verilogonly: Boolean)  {
+    if (verilogonly)
+      chisel3.Driver.execute(args, dut)
+    else
+      iotesters.Driver.execute(args, dut) {tester}
   }
 }

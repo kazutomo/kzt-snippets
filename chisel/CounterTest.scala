@@ -16,3 +16,16 @@ class CounterUnitTester(c: Counter) extends PeekPokeTester(c) {
     step(1)
   }
 }
+
+object CounterTest {
+  val maxval = 10
+  val dut = () => new Counter(maxval)
+  val tester = c => new CounterUnitTester(c)
+
+  def run(args: Array[String], verilogonly: Boolean)  {
+    if (verilogonly)
+      chisel3.Driver.execute(args, dut)
+    else
+      iotesters.Driver.execute(args, dut) {tester}
+  }
+}
