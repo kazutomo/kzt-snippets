@@ -41,5 +41,6 @@ object TestMain extends App {
     case "clz" => ClzTest.run(args, verilogonly)
     case "srmem" => SRMemTest.run(args, verilogonly)
     case "concat" => ConcatVecsTest.run(args, verilogonly)
+    case _ => RevTest.run(args, verilogonly)
   }
 }
