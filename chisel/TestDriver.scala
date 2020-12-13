@@ -12,7 +12,8 @@ object TestMain extends App {
   // default params and component target list
   val targetlist = List(
     "rev", "foo", "count",
-    "concat", "xnor", "clz", "srmem", "nerd", "count")
+    "concat", "xnor", "clz", "srmem", "nerd", "count",
+    "bmsort"  )
 
   val a = if (args.length > 0) args(0) else "rev"
   val tmp = a.split(":")
@@ -41,6 +42,7 @@ object TestMain extends App {
     case "clz" => ClzTest.run(args, verilogonly)
     case "srmem" => SRMemTest.run(args, verilogonly)
     case "concat" => ConcatVecsTest.run(args, verilogonly)
+    case "bmsort" => BitMaskSortedTest.run(args, verilogonly)
     case _ => RevTest.run(args, verilogonly)
   }
 }
