@@ -43,6 +43,7 @@ object TestMain extends App {
     case "srmem" => SRMemTest.run(args, verilogonly)
     case "concat" => ConcatVecsTest.run(args, verilogonly)
     case "bmsort" => BitMaskSortedTest.run(args, verilogonly)
+    case "mmsort" => MMSortTwoTest.run(args, verilogonly)
     case _ => RevTest.run(args, verilogonly)
   }
 }
