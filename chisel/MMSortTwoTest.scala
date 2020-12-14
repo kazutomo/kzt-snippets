@@ -10,25 +10,37 @@ class MMSortTwoUnitTester(c: MMSortTwo) extends PeekPokeTester(c) {
 
   val testpats = List((0,0), (0,3), (1,0), (1,3))
 
-  def refAB(a: Int, b: Int ) : Int = {
-    if ( a == 0 )  b
-    else a | (b << bitwidth)
+  def refAB(a: Int, b: Int ) : (Int, Int) = {
+    if ( a == 0 )  (b, 0)
+    else           (a, b)
   }
 
+  // binarized int (to print binary with %d)
+  def BI(a: Int) : Int = a.toBinaryString.toInt
+
   // format string
-  val fs_in  = f"%%0${bitwidth}d"
-  val fs_out = f"%%0${bitwidth*2}d"
+  val fs  = f"%%0${bitwidth}d"
+
 
   for (tp <- testpats) {
     poke(c.io.inA, tp._1)
     poke(c.io.inB, tp._2)
 
-    val outAB = peek(c.io.outAB).toInt
+    val outA = peek(c.io.outA).toInt
+    val outB = peek(c.io.outB).toInt
     val outMask = peek(c.io.outMask).toInt
 
-    printf("A=" + fs_in  + " B=" + fs_in + " => AB=" + fs_out + " Mask=%02d\n",
-      tp._1, tp._2, outAB.toBinaryString.toInt, outMask.toBinaryString.toInt)
+    printf("A=" + fs  + " B=" + fs + " => A=" + fs + " B=" + fs + " Mask=%02d\n",
+      BI(tp._1), BI(tp._2),
+      outA.toBinaryString.toInt,  outB.toBinaryString.toInt,
+      outMask.toBinaryString.toInt)
+
+    val (refA, refB) = refAB(tp._1, tp._2)
+    expect(c.io.outA, refA)
+    expect(c.io.outB, refB)
   }
+
+  printf("Note: mask MSB is inB and LSB is outA\n")
 }
 
 object MMSortTwoTest {

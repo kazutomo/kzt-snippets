@@ -17,8 +17,9 @@ class MMSortTwo(val bw:Int = 10) extends Module {
   val io = IO(new Bundle {
     val inA  = Input(UInt(bw.W))
     val inB  = Input(UInt(bw.W))
-    val outAB = Output(UInt((2*bw).W))
-    val outMask = Output(UInt(2.W)) // PopCount(outMask) tells len
+    val outA = Output(UInt(bw.W))
+    val outB = Output(UInt(bw.W))
+    val outMask = Output(UInt(2.W)) // PopCount(outMask) to get len
   })
 
   val mask = Cat(io.inB.orR, io.inA.orR) // Cat(MSB, LSB)
@@ -26,8 +27,10 @@ class MMSortTwo(val bw:Int = 10) extends Module {
   io.outMask := mask
 
   when ( mask === 2.U ) {
-    io.outAB := Cat(0.U(bw.W), io.inB)
+    io.outA := io.inB
+    io.outB := 0.U(bw.W)
   } .otherwise {
-    io.outAB := Cat(io.inB, io.inA)
+    io.outA := io.inA
+    io.outB := io.inB
   }
 }
