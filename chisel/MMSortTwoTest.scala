@@ -14,6 +14,9 @@ class MMSortTwoUnitTester(c: MMSortTwo) extends PeekPokeTester(c) {
     if ( a == 0 )  (b, 0)
     else           (a, b)
   }
+  def refMask(a: Int, b: Int ) : Int = {
+    (if(a>0) 1 else 0) + (if(b>0) 2 else 0)
+  }
 
   // binarized int (to print binary with %d)
   def BI(a: Int) : Int = a.toBinaryString.toInt
@@ -26,18 +29,19 @@ class MMSortTwoUnitTester(c: MMSortTwo) extends PeekPokeTester(c) {
     poke(c.io.inA, tp._1)
     poke(c.io.inB, tp._2)
 
-    val outA = peek(c.io.outA).toInt
-    val outB = peek(c.io.outB).toInt
+    val outLow = peek(c.io.out(0)).toInt
+    val outHigh = peek(c.io.out(1)).toInt
     val outMask = peek(c.io.outMask).toInt
 
-    printf("A=" + fs  + " B=" + fs + " => A=" + fs + " B=" + fs + " Mask=%02d\n",
-      BI(tp._1), BI(tp._2),
-      outA.toBinaryString.toInt,  outB.toBinaryString.toInt,
+    printf("B=" + fs  + " A=" + fs + " => " + fs + " " + fs + " Mask=%02d\n",
+      BI(tp._2), BI(tp._1),
+      outHigh.toBinaryString.toInt,  outLow.toBinaryString.toInt,
       outMask.toBinaryString.toInt)
 
     val (refA, refB) = refAB(tp._1, tp._2)
-    expect(c.io.outA, refA)
-    expect(c.io.outB, refB)
+    expect(c.io.out(0), refA)
+    expect(c.io.out(1), refB)
+    expect(c.io.outMask, refMask(tp._1, tp._2))
   }
 
   printf("Note: mask MSB is inB and LSB is outA\n")

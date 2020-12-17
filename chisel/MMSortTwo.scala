@@ -1,7 +1,7 @@
 package foobar
 
 import chisel3._
-import chisel3.util._  // to use PopCount and log2Ceil
+import chisel3.util._ // to use Cat()
 
 // MMSortTwo: masked merge sort of two inputs. This module is a
 // two-input (merge) sorting logic with respect to the zeroness of the
@@ -17,8 +17,7 @@ class MMSortTwo(val bw:Int = 10) extends Module {
   val io = IO(new Bundle {
     val inA  = Input(UInt(bw.W))
     val inB  = Input(UInt(bw.W))
-    val outA = Output(UInt(bw.W))
-    val outB = Output(UInt(bw.W))
+    val out  = Output(Vec(2,UInt(bw.W)))
     val outMask = Output(UInt(2.W)) // PopCount(outMask) to get len
   })
 
@@ -27,10 +26,10 @@ class MMSortTwo(val bw:Int = 10) extends Module {
   io.outMask := mask
 
   when ( mask === 2.U ) {
-    io.outA := io.inB
-    io.outB := 0.U(bw.W)
+    io.out(0) := io.inB
+    io.out(1) := 0.U(bw.W)
   } .otherwise {
-    io.outA := io.inA
-    io.outB := io.inB
+    io.out(0) := io.inA
+    io.out(1) := io.inB
   }
 }

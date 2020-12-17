@@ -28,14 +28,15 @@ class ConcatZeroStrip(val nelems:Int = 2, val bw:Int = 10) extends Module {
 
   // linearize the twoinputs, combining A and B into a single vector
   // of wires.
-  val inAB = Wire(Vec(nelems_out, UInt(bw.W)))
+  val inAB = Wire(Vec(nelems_out+1, UInt(bw.W)))
   for (i <- 0 until nelems) {
     inAB(i)        := io.inA(i)
     inAB(i+nelems) := io.inB(i)
   }
+  inAB(nelems_out) := 0.U
 
   // pop count of mask bits, which can tell us the length of non-zero
-  // elements.
+  // elements, assuming the elements associated to this mask are sorted
   val popcA = PopCount(io.inAmask)
   val popcB = PopCount(io.inBmask)
 
@@ -52,7 +53,7 @@ class ConcatZeroStrip(val nelems:Int = 2, val bw:Int = 10) extends Module {
     def createMuxLookupList(muxid : Int) : List[Int]  = {
       List.tabulate(nelems+1) {j =>
         if (muxid < nelems) { if (j<(nelems-muxid)) muxid         else j+muxid }
-        else                { if ((j+muxid) < nelems_out) j+muxid else nelems_out -1}
+        else                { if ((j+muxid) < nelems_out) j+muxid else nelems_out}
       }
     }
 
