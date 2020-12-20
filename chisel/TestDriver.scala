@@ -13,7 +13,7 @@ object TestMain extends App {
   val targetlist = List(
     "rev", "foo", "count",
     "concat", "xnor", "clz", "srmem", "nerd", "count",
-    "bmsort", "catnz"  )
+    "bmsort", "catnz", "nway"  )
 
   val a = if (args.length > 0) args(0) else "rev"
   val tmp = a.split(":")
@@ -45,6 +45,7 @@ object TestMain extends App {
     case "bmsort" => BitMaskSortedTest.run(args, verilogonly)
     case "mmsort" => MMSortTwoTest.run(args, verilogonly)
     case "catnz" => ConcatZeroStripTest.run(args, verilogonly)
+    case "nway" => NwayMuxTest.run(args, verilogonly)
     case _ => RevTest.run(args, verilogonly)
   }
 }
