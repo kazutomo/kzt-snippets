@@ -46,6 +46,7 @@ object TestMain extends App {
     case "mmsort" => MMSortTwoTest.run(args, verilogonly)
     case "catnz" => ConcatZeroStripTest.run(args, verilogonly)
     case "nway" => NwayMuxTest.run(args, verilogonly)
+    case "gray" => GrayTest.run(args, verilogonly)
     case _ => RevTest.run(args, verilogonly)
   }
 }
