@@ -50,10 +50,5 @@ object SRMemTest {
   val dut = () => new SRMem()
   val tester = c => new SRMemUnitTester(c)
 
-  def run(args: Array[String], verilogonly: Boolean)  {
-    if (verilogonly)
-      chisel3.Driver.execute(args, dut)
-    else
-      iotesters.Driver.execute(args, dut) {tester}
-  }
+  def run() { TestMain.driverhelper(dut, tester) }
 }

@@ -37,10 +37,5 @@ object GrayTest {
   val dut = () => new Gray(bitwidth)
   val tester = c => new GrayUnitTester(c)
 
-  def run(args: Array[String], verilogonly: Boolean)  {
-    if (verilogonly)
-      chisel3.Driver.execute(args, dut)
-    else
-      iotesters.Driver.execute(args, dut) {tester}
-  }
+  def run() { TestMain.driverhelper(dut, tester) }
 }

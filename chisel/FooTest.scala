@@ -21,16 +21,10 @@ class FooUnitTester(c: Foo) extends PeekPokeTester(c) {
   }
 }
 
-
 object FooTest {
   val bitwidth = 16
   val dut = () => new Foo(bitwidth)
   val tester = c => new FooUnitTester(c)
 
-  def run(args: Array[String], verilogonly: Boolean)  {
-    if (verilogonly)
-      chisel3.Driver.execute(args, dut)
-    else
-      iotesters.Driver.execute(args, dut) {tester}
-  }
+  def run() { TestMain.driverhelper(dut, tester) }
 }

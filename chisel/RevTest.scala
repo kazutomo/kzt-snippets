@@ -30,10 +30,5 @@ object RevTest {
   val dut = () => new Rev(bitwidth)
   val tester = c => new RevUnitTester(c)
 
-  def run(args: Array[String], verilogonly: Boolean)  {
-    if (verilogonly)
-      chisel3.Driver.execute(args, dut)
-    else
-      iotesters.Driver.execute(args, dut) {tester}
-  }
+  def run() { TestMain.driverhelper(dut, tester) }
 }
