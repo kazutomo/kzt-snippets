@@ -11,26 +11,62 @@ import chisel3.experimental._
 
 object TestMain extends App {
   // default params and component target list
-  val targetlist = List(
-    "rev", "foo", "count",
-    "concat", "xnor", "clz", "srmem", "nerd", "count",
-    "bmsort", "catnz", "nway"  )
 
-  val a = if (args.length > 0) args(0) else "rev"
+  // NOTE: I don't like lazy function eval... any better way?
+  val targetmap = Map(
+    "Rev"             -> (() => RevTest.run(), "bit reverse"),
+    "Foo"             -> (() => FooTest.run(), "dummy"),
+    "Counter"         -> (() => CounterTest.run(), "simple counter"),
+    "NerdCounter"     -> (() => NerdCounterTest.run(), "nerd counter"),
+    "XnorPop"         -> (() => XnorPopTest.run(), "xnor pop"),
+    "Clz"             -> (() => ClzTest.run(), "leading zero count"),
+    "SRMem"           -> (() => SRMemTest.run(), "sync read ram"),
+    "ConcatVecs"      -> (() => ConcatVecsTest.run(), "concat two vecs"),
+    "BitMaskSorted"   -> (() => BitMaskSortedTest.run(), "bit mask sorted"),
+    "MMSortTwo"       -> (() => MMSortTwoTest.run(), "mask merge sort"),
+    "ConcatZeroStrip" -> (() => ConcatZeroStripTest.run(), "concat zero strip"),
+    "NwayMux"         -> (() => NwayMuxTest.run(), "n-way MUX"),
+    "Gray"            -> (() => GrayTest.run(), "gray coding")
+  )
+
+  val a = if (args.length > 0) args(0) else "Rev"
   val tmp = a.split(":")
   val target = tmp(0)
   val mode = if (tmp.length > 1) tmp(1) else "test"
 
-  if ( target=="list" ) {
-    println("*target list")
-    for (t <- targetlist)  println(t)
-    System.exit(0)
-  }
-
   // check see if only verilog output
   val verilogonly = mode.toLowerCase().substring(0,1) match {case "v" => true ; case _ => false}
 
-  println(f"MODE=$mode TARGET=$target")
+  def printlist() {
+    if ( target=="list" ) {
+      println("*target list")
+      for (t <- targetmap.keys) {
+        printf("%-15s : %s\n", t, targetmap(t)._2)
+      }
+    }
+  }
+
+
+  val matched = targetmap.keys.filter(_.toLowerCase.matches("^" + target.toLowerCase + ".*"))
+
+  println()
+  if (matched.size == 0) {
+    println("No match found for " + target)
+    printlist()
+    println()
+    System.exit(1)
+  } else if (matched.size > 1) {
+    println("Multiple matches found for " + target)
+    for (i <- matched) print(i + " ")
+    println()
+    printlist()
+    println()
+    System.exit(1)
+  }
+
+  val found = matched.toList(0)
+
+  println(f"MODE=$mode TARGET=$found")
 
   // this function is called from each test driver
   def driverhelper[T <: MultiIOModule](dutgen : () => T, testergen: T => PeekPokeTester[T]) {
@@ -40,23 +76,5 @@ object TestMain extends App {
     else             iotesters.Driver.execute(args, dutgen) {testergen}
   }
 
-  target match {
-    case "list" =>
-      println("*target list")
-      for (t <- targetlist)  println(t)
-    case "rev" => RevTest.run()
-    case "foo" => FooTest.run()
-    case "count" => CounterTest.run()
-    case "nerd" => NerdCounterTest.run()
-    case "xnor" => XnorPopTest.run()
-    case "clz" => ClzTest.run()
-    case "srmem" => SRMemTest.run()
-    case "concat" => ConcatVecsTest.run()
-    case "bmsort" => BitMaskSortedTest.run()
-    case "mmsort" => MMSortTwoTest.run()
-    case "catnz" => ConcatZeroStripTest.run()
-    case "nway" => NwayMuxTest.run()
-    case "gray" => GrayTest.run()
-    case _ => RevTest.run()
-  }
+  targetmap(found)._1()
 }
