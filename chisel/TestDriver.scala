@@ -9,10 +9,17 @@ import chisel3.iotesters
 import chisel3.iotesters.{Driver, PeekPokeTester}
 import chisel3.experimental._
 
+object RTLGenMain extends App {
+
+}
+
 object TestMain extends App {
   // default params and component target list
-
-  // NOTE: I don't like lazy function eval... any better way?
+  // NOTE: It is possible to register objects directly to this map,
+  // which requires less type, however, the constructor of all objects
+  // are called here, which is not preferable. With this way, the
+  // constructor of test object is not called until the run() method
+  // is called, which is good.
   val targetmap = Map(
     "Rev"             -> (() => RevTest.run(), "bit reverse"),
     "Foo"             -> (() => FooTest.run(), "dummy"),
@@ -38,16 +45,19 @@ object TestMain extends App {
   val verilogonly = mode.toLowerCase().substring(0,1) match {case "v" => true ; case _ => false}
 
   def printlist() {
-    if ( target=="list" ) {
-      println("*target list")
-      for (t <- targetmap.keys) {
-        printf("%-15s : %s\n", t, targetmap(t)._2)
-      }
+    println("*target list")
+    for (t <- targetmap.keys) {
+      printf("%-15s : %s\n", t, targetmap(t)._2)
     }
   }
 
+  if ( target=="list" ) {
+    printlist()
+    System.exit(0)
+  }
 
-  val matched = targetmap.keys.filter(_.toLowerCase.matches("^" + target.toLowerCase + ".*"))
+  val matched = targetmap.keys.filter(
+    _.toLowerCase.matches("^" + target.toLowerCase + ".*"))
 
   println()
   if (matched.size == 0) {
@@ -65,7 +75,6 @@ object TestMain extends App {
   }
 
   val found = matched.toList(0)
-
   println(f"MODE=$mode TARGET=$found")
 
   // this function is called from each test driver

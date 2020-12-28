@@ -1,7 +1,7 @@
 # Chisel sample makefile
 # written by Kazutomo Yoshii <kazutomo.yoshii@gmail.com>
 
-T=rev
+T=Foo
 
 all:
 	@echo "To run:"
@@ -24,7 +24,6 @@ all:
 	@echo ""
 
 
-
 # generate a Verilog fil
 v verilog:
 	sbt "test:runMain foobar.TestMain $T:verilog"
@@ -41,7 +40,7 @@ l list:
 	sbt "test:runMain foobar.TestMain list"
 
 h help:
-	sbt "test:runMain foobar.TestMain --help"
+	sbt "test:runMain foobar.TestMain $T --help"
 
 clean:
 	rm -rf project target test_run_dir generated *.class
