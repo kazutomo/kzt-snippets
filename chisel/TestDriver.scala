@@ -9,10 +9,6 @@ import chisel3.iotesters
 import chisel3.iotesters.{Driver, PeekPokeTester}
 import chisel3.experimental._
 
-object RTLGenMain extends App {
-
-}
-
 object TestMain extends App {
   // default params and component target list
   // NOTE: It is possible to register objects directly to this map,
@@ -33,7 +29,8 @@ object TestMain extends App {
     "MMSortTwo"       -> (() => MMSortTwoTest.run(), "mask merge sort"),
     "ConcatZeroStrip" -> (() => ConcatZeroStripTest.run(), "concat zero strip"),
     "NwayMux"         -> (() => NwayMuxTest.run(), "n-way MUX"),
-    "Gray"            -> (() => GrayTest.run(), "gray coding")
+    "Gray"            -> (() => GrayTest.run(), "gray coding"),
+    "Fibonacci"       -> (() => FibonacciTest.run(), "Fibonacci number")
   )
 
   val a = if (args.length > 0) args(0) else "Rev"
