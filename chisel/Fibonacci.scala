@@ -2,10 +2,16 @@ package foobar
 
 import chisel3._
 
+// This module outputs a sequence of Fibonacci numbers. A new
+// Fibonacci number is generated each clock. If the next number does
+// not fit to the specified bit length, io.ismaxval becomes true to
+// tell the caller the current number is the maximum possible number
+// and the output in the next cycle becomes 0, starting over the
+// Fibonacci number generation.
 class Fibonacci(val bw:Int = 8) extends Module {
   val io = IO(new Bundle {
     val out = Output(UInt(bw.W))
-    val overflow = Output(Bool())
+    val ismaxfibnum = Output(Bool()) // the maximum possible Fibonacci number in bw bits
   })
 
   val aReg = RegInit(0.U((bw+1).W))
@@ -19,6 +25,6 @@ class Fibonacci(val bw:Int = 8) extends Module {
     bReg := aReg + bReg
   }
 
-  io.overflow := bReg(bw)
+  io.ismaxfibnum := bReg(bw)
   io.out := aReg
 }

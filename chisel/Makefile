@@ -8,7 +8,7 @@ all:
 	@echo ""
 	@echo "$ make test       # run Scala test"
 	@echo "$ make simulate   # invoke Verilator"
-	@echo "$ make verilog    # generate Verilog codes"
+	@echo "$ make verilog    # generate a Verilog code"
 	@echo ""
 	@echo "Shortcut for convinice"
 	@echo "$ make t   # for test"
@@ -16,21 +16,22 @@ all:
 	@echo "$ make v   # for verilog"
 	@echo ""
 	@echo ""
-	@echo "To test invididual module"
-	@echo "$ make test T=squeeze  #  test the squeeze module"
+	@echo "To test a specific module:"
+	@echo "$ make test T=Rev  #  test the Rev module"
+	@echo "NOTE: it searches for the shortest possible match with lower case. If there is no other module starts with 'r', you can simply say T=r"
 	@echo ""
-	@echo "To list target available modules"
+	@echo "To list target available modules:"
 	@echo "$ make list"
 	@echo ""
 
 
-# generate a Verilog fil
-v verilog:
-	sbt "test:runMain foobar.TestMain $T:verilog"
-
 # run Scala Unit test
 t test:
 	sbt "test:runMain foobar.TestMain $T"
+
+# generate a Verilog fil
+v verilog:
+	sbt "test:runMain foobar.TestMain $T:verilog"
 
 # simulate using Verilator
 s simulate:
