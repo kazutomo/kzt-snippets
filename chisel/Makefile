@@ -27,21 +27,21 @@ all:
 
 # run Scala Unit test
 t test:
-	sbt "test:runMain foobar.TestMain $T"
+	sbt "test:runMain foobar.TestMain t $T"
 
 # generate a Verilog fil
 v verilog:
-	sbt "test:runMain foobar.TestMain $T:verilog"
+	sbt "test:runMain foobar.TestMain v $T"
 
 # simulate using Verilator
 s simulate:
-	sbt "test:runMain foobar.TestMain $T --backend-name verilator"
+	sbt "test:runMain foobar.TestMain s $T"
 
 l list:
-	sbt "test:runMain foobar.TestMain list"
+	sbt "test:runMain foobar.TestMain l"
 
 h help:
-	sbt "test:runMain foobar.TestMain $T --help"
+	sbt "test:runMain foobar.TestMain t $T --help"
 
 clean:
 	rm -rf project target test_run_dir generated *.class

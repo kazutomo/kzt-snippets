@@ -33,14 +33,6 @@ object TestMain extends App {
     "Fibonacci"       -> (() => FibonacciTest.run(), "Fibonacci number")
   )
 
-  val a = if (args.length > 0) args(0) else "Rev"
-  val tmp = a.split(":")
-  val target = tmp(0)
-  val mode = if (tmp.length > 1) tmp(1) else "test"
-
-  // check see if only verilog output
-  val verilogonly = mode.toLowerCase().substring(0,1) match {case "v" => true ; case _ => false}
-
   def printlist() {
     println("*target list")
     for (t <- targetmap.keys) {
@@ -48,11 +40,26 @@ object TestMain extends App {
     }
   }
 
-  if ( target=="list" ) {
+  if (args.length < 2) {
+    println("Usage: foobar.TestMain mode target [options]")
+    println("")
+    System.exit(1)
+  }
+
+  val mode   = args(0)
+  val target = args(1)
+
+  def checkfirstcharnocap(s: String, c: String) : Boolean = if (s.toLowerCase().substring(0,1) == c ) true else false
+
+  // check see if only verilog output
+  val verilogonly = checkfirstcharnocap(mode, "v")
+
+  if (checkfirstcharnocap(mode, "l")) {
     printlist()
     System.exit(0)
   }
 
+  // find target module name match
   val matched = targetmap.keys.filter(
     _.toLowerCase.matches("^" + target.toLowerCase + ".*"))
 
