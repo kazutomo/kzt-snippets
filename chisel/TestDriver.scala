@@ -85,8 +85,8 @@ object TestMain extends App {
   def driverhelper[T <: MultiIOModule](dutgen : () => T, testergen: T => PeekPokeTester[T]) {
     // Note: is chisel3.Driver.execute a right way to generate
     // verilog, or better to use (new ChiselStage).emitVerilog()?
-    if (verilogonly) chisel3.Driver.execute(args, dutgen)
-    else             iotesters.Driver.execute(args, dutgen) {testergen}
+    if (verilogonly) chisel3.Driver.execute(args.drop(2), dutgen)
+    else           iotesters.Driver.execute(args.drop(2), dutgen) {testergen}
   }
 
   targetmap(found)._1()

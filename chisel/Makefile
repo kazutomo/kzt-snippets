@@ -38,7 +38,7 @@ s simulate:
 	sbt "test:runMain foobar.TestMain s $T"
 
 l list:
-	sbt "test:runMain foobar.TestMain l"
+	sbt "test:runMain foobar.TestMain l $T"
 
 h help:
 	sbt "test:runMain foobar.TestMain t $T --help"
