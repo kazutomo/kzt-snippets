@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 if [ -z "$1" ] ; then
     echo "Usage: $0 command [target]"
     echo ""
@@ -29,8 +28,4 @@ fi
 
 sbt "test:runMain foobar.TestMain $mode $target $opts"
 
-
 exit 0
-
-
-

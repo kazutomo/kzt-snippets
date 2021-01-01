@@ -2,46 +2,36 @@
 # written by Kazutomo Yoshii <kazutomo.yoshii@gmail.com>
 
 T=Foo
+M=test
 
 all:
-	@echo "To run:"
+	@echo "To run test:"
+	@echo "$ make TARGET"
 	@echo ""
-	@echo "$ make test       # run Scala test"
-	@echo "$ make simulate   # invoke Verilator"
-	@echo "$ make verilog    # generate a Verilog code"
+	@echo "To generate Verilog file"
+	@echo "$ make TARGET.v	"
 	@echo ""
-	@echo "Shortcut for convinice"
-	@echo "$ make t   # for test"
-	@echo "$ make s   # for simulate"
-	@echo "$ make v   # for verilog"
-	@echo ""
-	@echo ""
-	@echo "To test a specific module:"
-	@echo "$ make test T=Rev  #  test the Rev module"
-	@echo "NOTE: it searches for the shortest possible match with lower case. If there is no other module starts with 'r', you can simply say T=r"
+	@echo "To simulate using Verilator"
+	@echo "$ make TARGET.vcd"
 	@echo ""
 	@echo "To list target available modules:"
 	@echo "$ make list"
 	@echo ""
 
+% : %.scala
+	@./run.sh test $@
 
-# run Scala Unit test
-t test:
-	sbt "test:runMain foobar.TestMain t $T"
+%.v : %.scala
+	@./run.sh verilog $(@:.v=)
 
-# generate a Verilog fil
-v verilog:
-	sbt "test:runMain foobar.TestMain v $T"
-
-# simulate using Verilator
-s simulate:
-	sbt "test:runMain foobar.TestMain s $T"
+%.vcd : %.scala
+	@./run.sh simulate $(@:.vcd=)
 
 l list:
-	sbt "test:runMain foobar.TestMain l $T"
+	@./run.sh list
 
 h help:
-	sbt "test:runMain foobar.TestMain t $T --help"
+	@./run.sh test $T --help
 
 clean:
 	rm -rf project target test_run_dir generated *.class
