@@ -26,6 +26,7 @@ all:
 
 %.vcd : %.scala
 	@./run.sh simulate $(@:.vcd=)
+	@find -type f -name $@
 
 l list:
 	@./run.sh list

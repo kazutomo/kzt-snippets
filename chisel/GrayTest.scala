@@ -28,6 +28,7 @@ class GrayUnitTester(c: Gray) extends PeekPokeTester(c) {
     expect(c.io.out, vin)
 
     printf("test%03d: in=%02x en=%02x de=%02x\n", i, vin, vinen, vinende)
+    step(1)
   }
 }
 
