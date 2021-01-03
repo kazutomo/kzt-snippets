@@ -36,9 +36,11 @@ class FibonacciUnitTester(c: Fibonacci) extends PeekPokeTester(c) {
 }
 
 object FibonacciTest {
-  val bitwidth = 7
-  val dut = () => new Fibonacci(bitwidth)
-  val tester = c => new FibonacciUnitTester(c)
 
-  def run() { TestMain.driverhelper(dut, tester) }
+  def run(args: Array[String]) {
+    val bitwidth = 7
+    val dut = () => new Fibonacci(bitwidth)
+    val tester = c => new FibonacciUnitTester(c)
+    TestMain.driverhelper(args, dut, tester)
+  }
 }

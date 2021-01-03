@@ -47,8 +47,10 @@ class SRMemUnitTester(c: SRMem) extends PeekPokeTester(c) {
 
 
 object SRMemTest {
-  val dut = () => new SRMem()
-  val tester = c => new SRMemUnitTester(c)
+  def run(args: Array[String]) {
+    val dut = () => new SRMem()
+    val tester = c => new SRMemUnitTester(c)
 
-  def run() { TestMain.driverhelper(dut, tester) }
+    TestMain.driverhelper(args, dut, tester)
+  }
 }

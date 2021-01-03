@@ -39,9 +39,12 @@ class ClzUnitTester(c: ClzParam) extends PeekPokeTester(c) {
 }
 
 object ClzTest {
-  val nb = 16
-  val dut = () => new ClzParam(nb)
-  val tester = c => new ClzUnitTester(c)
 
-  def run() { TestMain.driverhelper(dut, tester) }
+  def run(args: Array[String]) {
+    val nb = 16
+    val dut = () => new ClzParam(nb)
+    val tester = c => new ClzUnitTester(c)
+
+    TestMain.driverhelper(args, dut, tester)
+  }
 }

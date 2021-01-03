@@ -10,35 +10,6 @@ import chisel3.iotesters.{Driver, PeekPokeTester}
 import chisel3.experimental._
 
 object TestMain extends App {
-  // default params and component target list
-  // NOTE: It is possible to register objects directly to this map,
-  // which requires less type, however, the constructor of all objects
-  // are called here, which is not preferable. With this way, the
-  // constructor of test object is not called until the run() method
-  // is called, which is good.
-  val targetmap = Map(
-    "Rev"             -> (() => RevTest.run(), "bit reverse"),
-    "Foo"             -> (() => FooTest.run(), "dummy"),
-    "Counter"         -> (() => CounterTest.run(), "simple counter"),
-    "NerdCounter"     -> (() => NerdCounterTest.run(), "nerd counter"),
-    "XnorPop"         -> (() => XnorPopTest.run(), "xnor pop"),
-    "Clz"             -> (() => ClzTest.run(), "leading zero count"),
-    "SRMem"           -> (() => SRMemTest.run(), "sync read ram"),
-    "ConcatVecs"      -> (() => ConcatVecsTest.run(), "concat two vecs"),
-    "BitMaskSorted"   -> (() => BitMaskSortedTest.run(), "bit mask sorted"),
-    "MMSortTwo"       -> (() => MMSortTwoTest.run(), "mask merge sort"),
-    "ConcatZeroStrip" -> (() => ConcatZeroStripTest.run(), "concat zero strip"),
-    "NwayMux"         -> (() => NwayMuxTest.run(), "n-way MUX"),
-    "Gray"            -> (() => GrayTest.run(), "gray coding"),
-    "Fibonacci"       -> (() => FibonacciTest.run(), "Fibonacci number")
-  )
-
-  def printlist() {
-    println("*target list")
-    for (t <- targetmap.keys) {
-      printf("%-15s : %s\n", t, targetmap(t)._2)
-    }
-  }
 
   if (args.length < 2) {
     println("Usage: foobar.TestMain mode target [options]")
@@ -48,6 +19,39 @@ object TestMain extends App {
 
   val mode   = args(0)
   val target = args(1)
+
+  val args2 = args.drop(2)
+
+  // default params and component target list
+  // NOTE: It is possible to register objects directly to this map,
+  // which requires less type, however, the constructor of all objects
+  // are called here, which is not preferable. With this way, the
+  // constructor of test object is not called until the run() method
+  // is called, which is good.
+  val targetmap = Map(
+    "Rev"             -> (() => RevTest.run(args2), "bit reverse"),
+    "Foo"             -> (() => FooTest.run(args2), "dummy"),
+    "Counter"         -> (() => CounterTest.run(args2), "simple counter"),
+    "NerdCounter"     -> (() => NerdCounterTest.run(args2), "nerd counter"),
+    "XnorPop"         -> (() => XnorPopTest.run(args2), "xnor pop"),
+    "Clz"             -> (() => ClzTest.run(args2), "leading zero count"),
+    "SRMem"           -> (() => SRMemTest.run(args2), "sync read ram"),
+    "ConcatVecs"      -> (() => ConcatVecsTest.run(args2), "concat two vecs"),
+    "BitMaskSorted"   -> (() => BitMaskSortedTest.run(args2), "bit mask sorted"),
+    "MMSortTwo"       -> (() => MMSortTwoTest.run(args2), "mask merge sort"),
+    "ConcatZeroStrip" -> (() => ConcatZeroStripTest.run(args2), "concat zero strip"),
+    "NwayMux"         -> (() => NwayMuxTest.run(args2), "n-way MUX"),
+    "Gray"            -> (() => GrayTest.run(args2), "gray coding"),
+    "Fibonacci"       -> (() => FibonacciTest.run(args2), "Fibonacci number")
+  )
+
+  def printlist() {
+    println("*target list")
+    for (t <- targetmap.keys) {
+      printf("%-15s : %s\n", t, targetmap(t)._2)
+    }
+  }
+
 
   def checkfirstcharnocap(s: String, c: String) : Boolean = if (s.toLowerCase().substring(0,1) == c ) true else false
 
@@ -81,13 +85,32 @@ object TestMain extends App {
   val found = matched.toList(0)
   println(f"MODE=$mode TARGET=$found")
 
-  // this function is called from each test driver
-  def driverhelper[T <: MultiIOModule](dutgen : () => T, testergen: T => PeekPokeTester[T]) {
-    // Note: is chisel3.Driver.execute a right way to generate
-    // verilog, or better to use (new ChiselStage).emitVerilog()?
-    if (verilogonly) chisel3.Driver.execute(args.drop(2), dutgen)
-    else           iotesters.Driver.execute(args.drop(2), dutgen) {testergen}
+
+  // This function search an option that is a combination of an option
+  // string and an integer value in args (e.g., -len 10). opt excludes
+  // '-'.  dval is the default value. A calling example is
+  // getoptint(args, "len", 16). If '-len' is found, the returned args
+  // is the same as the input args and optval is dval. If found, the
+  // returned args does not include '-len INT' and optval is INT.
+  def getoptint(args: Array[String], opt: String, dval: Int) :
+      (Array[String], Int) = {
+
+    val hopt = "-" + opt
+    val pos = args.indexOf(hopt)
+
+    if(pos < 0 || pos+1 >= args.length) return (args, dval)
+
+    return (args.patch(pos, Nil, 2),  args(pos+1).toInt)
   }
 
+  def driverhelper[T <: MultiIOModule](args: Array[String], dutgen : () => T, testergen: T => PeekPokeTester[T]) {
+    // Note: is chisel3.Driver.execute a right way to generate
+    // verilog, or better to use (new ChiselStage).emitVerilog()?
+    if (verilogonly) chisel3.Driver.execute(args, dutgen)
+    else           iotesters.Driver.execute(args, dutgen) {testergen}
+  }
+
+  // call the run() method of the found test object (e.g.,
+  // FooTest.scal for Foo)
   targetmap(found)._1()
 }

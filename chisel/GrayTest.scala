@@ -34,9 +34,12 @@ class GrayUnitTester(c: Gray) extends PeekPokeTester(c) {
 
 
 object GrayTest {
-  val bitwidth = 4
-  val dut = () => new Gray(bitwidth)
-  val tester = c => new GrayUnitTester(c)
 
-  def run() { TestMain.driverhelper(dut, tester) }
+  def run(args: Array[String]) {
+    val bitwidth = 4
+    val dut = () => new Gray(bitwidth)
+    val tester = c => new GrayUnitTester(c)
+
+    TestMain.driverhelper(args, dut, tester)
+  }
 }

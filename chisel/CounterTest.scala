@@ -18,9 +18,11 @@ class CounterUnitTester(c: Counter) extends PeekPokeTester(c) {
 }
 
 object CounterTest {
-  val maxval = 10
-  val dut = () => new Counter(maxval)
-  val tester = c => new CounterUnitTester(c)
+  def run(args: Array[String]) {
+    val maxval = 10
+    val dut = () => new Counter(maxval)
+    val tester = c => new CounterUnitTester(c)
 
-  def run() { TestMain.driverhelper(dut, tester) }
+    TestMain.driverhelper(args, dut, tester)
+  }
 }

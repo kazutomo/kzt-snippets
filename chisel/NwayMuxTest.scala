@@ -24,10 +24,12 @@ class NwayMuxUnitTester(c: NwayMux) extends PeekPokeTester(c) {
 
 
 object NwayMuxTest {
-  val nelems = 80
-  val bw = 64
-  val dut = () => new NwayMux(nelems, bw)
-  val tester = c => new NwayMuxUnitTester(c)
 
-  def run() { TestMain.driverhelper(dut, tester) }
+  def run(args: Array[String]) {
+    val nelems = 80
+    val bw = 64
+    val dut = () => new NwayMux(nelems, bw)
+    val tester = c => new NwayMuxUnitTester(c)
+    TestMain.driverhelper(args, dut, tester)
+  }
 }

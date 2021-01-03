@@ -37,9 +37,12 @@ class BitMaskSortedUnitTester(c: BitMaskSorted) extends PeekPokeTester(c) {
 }
 
 object BitMaskSortedTest {
-  val bw = 10
-  val dut = () => new BitMaskSorted(bw)
-  val tester = c => new BitMaskSortedUnitTester(c)
 
-  def run() { TestMain.driverhelper(dut, tester) }
+  def run(args: Array[String]) {
+    val bw = 10
+    val dut = () => new BitMaskSorted(bw)
+    val tester = c => new BitMaskSortedUnitTester(c)
+
+    TestMain.driverhelper(args, dut, tester)
+  }
 }

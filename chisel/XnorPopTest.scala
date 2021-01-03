@@ -37,9 +37,12 @@ class XnorPopUnitTester(c: XnorPop) extends PeekPokeTester(c) {
 
 
 object XnorPopTest {
-  val ninputs = 8
-  val dut = () => new XnorPop(ninputs)
-  val tester = c => new XnorPopUnitTester(c)
 
-  def run() { TestMain.driverhelper(dut, tester) }
+  def run(args: Array[String]) {
+    val ninputs = 8
+    val dut = () => new XnorPop(ninputs)
+    val tester = c => new XnorPopUnitTester(c)
+
+    TestMain.driverhelper(args, dut, tester)
+  }
 }

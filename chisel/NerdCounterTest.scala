@@ -18,9 +18,11 @@ class NerdCounterUnitTester(c: NerdCounter) extends PeekPokeTester(c) {
 }
 
 object NerdCounterTest {
-  val maxval = 10
-  val dut = () => new NerdCounter(maxval)
-  val tester = c => new NerdCounterUnitTester(c)
+  def run(args: Array[String]) {
+    val maxval = 10
+    val dut = () => new NerdCounter(maxval)
+    val tester = c => new NerdCounterUnitTester(c)
 
-  def run() { TestMain.driverhelper(dut, tester) }
+    TestMain.driverhelper(args, dut, tester)
+  }
 }

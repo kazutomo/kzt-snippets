@@ -42,8 +42,10 @@ class ConcatVecsUnitTester(c: ConcatVecs) extends PeekPokeTester(c) {
 }
 
 object ConcatVecsTest {
-  val dut = () => new ConcatVecs()
-  val tester = c => new ConcatVecsUnitTester(c)
 
-  def run() { TestMain.driverhelper(dut, tester) }
+  def run(args: Array[String]) {
+    val dut = () => new ConcatVecs()
+    val tester = c => new ConcatVecsUnitTester(c)
+    TestMain.driverhelper(args, dut, tester)
+  }
 }
