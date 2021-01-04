@@ -4,6 +4,7 @@ package foobar
 import chisel3.util._
 import chisel3.iotesters
 import chisel3.iotesters.{Driver, PeekPokeTester}
+import testutil._
 
 class SRMemUnitTester(c: SRMem) extends PeekPokeTester(c) {
 
@@ -51,6 +52,6 @@ object SRMemTest {
     val dut = () => new SRMem()
     val tester = c => new SRMemUnitTester(c)
 
-    TestMain.driverhelper(args, dut, tester)
+    TestUtil.driverhelper(args, dut, tester)
   }
 }

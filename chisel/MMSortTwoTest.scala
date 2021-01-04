@@ -3,6 +3,7 @@ package foobar
 import chisel3.util._
 import chisel3.iotesters
 import chisel3.iotesters.{Driver, PeekPokeTester}
+import testutil._
 
 class MMSortTwoUnitTester(c: MMSortTwo) extends PeekPokeTester(c) {
 
@@ -53,6 +54,6 @@ object MMSortTwoTest {
     val bitwidth = 4
     val dut = () => new MMSortTwo(bitwidth)
     val tester = c => new MMSortTwoUnitTester(c)
-    TestMain.driverhelper(args, dut, tester)
+    TestUtil.driverhelper(args, dut, tester)
   }
 }

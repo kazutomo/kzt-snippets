@@ -3,6 +3,7 @@ package foobar
 import chisel3.util._
 import chisel3.iotesters
 import chisel3.iotesters.{Driver, PeekPokeTester}
+import testutil._
 
 class GrayUnitTester(c: Gray) extends PeekPokeTester(c) {
 
@@ -40,6 +41,6 @@ object GrayTest {
     val dut = () => new Gray(bitwidth)
     val tester = c => new GrayUnitTester(c)
 
-    TestMain.driverhelper(args, dut, tester)
+    TestUtil.driverhelper(args, dut, tester)
   }
 }

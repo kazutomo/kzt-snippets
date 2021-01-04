@@ -3,6 +3,7 @@ package foobar
 import chisel3.util._
 import chisel3.iotesters
 import chisel3.iotesters.{Driver, PeekPokeTester}
+import testutil._
 
 class ConcatZeroStripUnitTester(c: ConcatZeroStrip) extends PeekPokeTester(c) {
   val nelems_in = c.nelems
@@ -30,6 +31,6 @@ object ConcatZeroStripTest {
     val nelems_in = 2
     val dut = () => new ConcatZeroStrip(nelems_in)
     val tester = c => new ConcatZeroStripUnitTester(c)
-    TestMain.driverhelper(args, dut, tester)
+    TestUtil.driverhelper(args, dut, tester)
   }
 }

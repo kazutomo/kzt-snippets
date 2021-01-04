@@ -2,6 +2,7 @@ package foobar
 
 import chisel3._
 import chisel3.iotesters.PeekPokeTester
+import testutil._
 
 class ClzUnitTester(c: ClzParam) extends PeekPokeTester(c) {
 
@@ -45,6 +46,6 @@ object ClzTest {
     val dut = () => new ClzParam(nb)
     val tester = c => new ClzUnitTester(c)
 
-    TestMain.driverhelper(args, dut, tester)
+    TestUtil.driverhelper(args, dut, tester)
   }
 }

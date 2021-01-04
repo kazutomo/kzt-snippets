@@ -3,6 +3,7 @@ package foobar
 import chisel3.util._
 import chisel3.iotesters
 import chisel3.iotesters.{Driver, PeekPokeTester}
+import testutil._
 
 class FibonacciUnitTester(c: Fibonacci) extends PeekPokeTester(c) {
 
@@ -41,6 +42,6 @@ object FibonacciTest {
     val bitwidth = 7
     val dut = () => new Fibonacci(bitwidth)
     val tester = c => new FibonacciUnitTester(c)
-    TestMain.driverhelper(args, dut, tester)
+    TestUtil.driverhelper(args, dut, tester)
   }
 }

@@ -3,6 +3,7 @@ package foobar
 import chisel3.util._
 import chisel3.iotesters
 import chisel3.iotesters.{Driver, PeekPokeTester}
+import testutil._
 
 class CounterUnitTester(c: Counter) extends PeekPokeTester(c) {
 
@@ -23,6 +24,6 @@ object CounterTest {
     val dut = () => new Counter(maxval)
     val tester = c => new CounterUnitTester(c)
 
-    TestMain.driverhelper(args, dut, tester)
+    TestUtil.driverhelper(args, dut, tester)
   }
 }

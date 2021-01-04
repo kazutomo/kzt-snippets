@@ -3,6 +3,7 @@ package foobar
 import chisel3.util._
 import chisel3.iotesters
 import chisel3.iotesters.{Driver, PeekPokeTester}
+import testutil._
 
 class BitMaskSortedUnitTester(c: BitMaskSorted) extends PeekPokeTester(c) {
 
@@ -43,6 +44,6 @@ object BitMaskSortedTest {
     val dut = () => new BitMaskSorted(bw)
     val tester = c => new BitMaskSortedUnitTester(c)
 
-    TestMain.driverhelper(args, dut, tester)
+    TestUtil.driverhelper(args, dut, tester)
   }
 }

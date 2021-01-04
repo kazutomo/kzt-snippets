@@ -3,6 +3,7 @@ package foobar
 import chisel3.util._
 import chisel3.iotesters
 import chisel3.iotesters.{Driver, PeekPokeTester}
+import testutil._
 
 class FooUnitTester(c: Foo) extends PeekPokeTester(c) {
 
@@ -24,13 +25,13 @@ class FooUnitTester(c: Foo) extends PeekPokeTester(c) {
 object FooTest {
 
   def run(args: Array[String]) {
-    val (args2, bwval) = TestMain.getoptint(args, "bw", 8)
+    val (args2, bwval) = TestUtil.getoptint(args, "bw", 8)
 
     println("FooTest: bitwidth=" + bwval)
 
     val dut = () => new Foo(bwval)
     val tester = c => new FooUnitTester(c)
 
-    TestMain.driverhelper(args2, dut, tester)
+    TestUtil.driverhelper(args2, dut, tester)
   }
 }

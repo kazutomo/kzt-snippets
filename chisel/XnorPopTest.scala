@@ -4,6 +4,7 @@ package foobar
 import chisel3.util._
 import chisel3.iotesters
 import chisel3.iotesters.{Driver, PeekPokeTester}
+import testutil._
 
 class XnorPopUnitTester(c: XnorPop) extends PeekPokeTester(c) {
 
@@ -43,6 +44,6 @@ object XnorPopTest {
     val dut = () => new XnorPop(ninputs)
     val tester = c => new XnorPopUnitTester(c)
 
-    TestMain.driverhelper(args, dut, tester)
+    TestUtil.driverhelper(args, dut, tester)
   }
 }

@@ -4,6 +4,7 @@ package foobar
 import chisel3.util._
 import chisel3.iotesters
 import chisel3.iotesters.{Driver, PeekPokeTester}
+import testutil._
 
 class RevUnitTester(c: Rev) extends PeekPokeTester(c) {
 
@@ -30,13 +31,13 @@ object RevTest {
 
   def run(args: Array[String]) {
 
-    val (args2, bwval) = TestMain.getoptint(args, "bw", 8)
+    val (args2, bwval) = TestUtil.getoptint(args, "bw", 8)
 
     println("RevTest: bitwidth=" + bwval)
 
     val dut = () => new Rev(bwval)
     val tester = c => new RevUnitTester(c)
 
-    TestMain.driverhelper(args2, dut, tester)
+    TestUtil.driverhelper(args2, dut, tester)
   }
 }

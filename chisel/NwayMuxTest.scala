@@ -3,6 +3,7 @@ package foobar
 import chisel3.util._
 import chisel3.iotesters
 import chisel3.iotesters.{Driver, PeekPokeTester}
+import testutil._
 
 class NwayMuxUnitTester(c: NwayMux) extends PeekPokeTester(c) {
   val nelems = c.n
@@ -30,6 +31,6 @@ object NwayMuxTest {
     val bw = 64
     val dut = () => new NwayMux(nelems, bw)
     val tester = c => new NwayMuxUnitTester(c)
-    TestMain.driverhelper(args, dut, tester)
+    TestUtil.driverhelper(args, dut, tester)
   }
 }
