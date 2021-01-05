@@ -18,5 +18,3 @@ class BitMaskSorted(val bw:Int = 10) extends Module {
 
   io.out := tmp
 }
-
-

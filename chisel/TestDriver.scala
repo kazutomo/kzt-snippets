@@ -30,11 +30,13 @@ object TestMain extends App {
     "SRMem"           -> (() => SRMemTest.run(args2), "sync read ram"),
     "ConcatVecs"      -> (() => ConcatVecsTest.run(args2), "concat two vecs"),
     "BitMaskSorted"   -> (() => BitMaskSortedTest.run(args2), "bit mask sorted"),
-    "MMSortTwo"       -> (() => MMSortTwoTest.run(args2), "mask merge sort"),
-    "ConcatZeroStrip" -> (() => ConcatZeroStripTest.run(args2), "concat zero strip"),
-    "NwayMux"         -> (() => NwayMuxTest.run(args2), "n-way MUX"),
     "Gray"            -> (() => GrayTest.run(args2), "gray coding"),
-    "Fibonacci"       -> (() => FibonacciTest.run(args2), "Fibonacci number")
+    "Fibonacci"       -> (() => FibonacciTest.run(args2), "Fibonacci number"),
+    // testing subcomponents of a compressor block
+    "NwayMux"         -> (() => NwayMuxTest.run(args2), "n-way MUX"),
+    "BitShuffle"      -> (() => BitShuffleTest.run(args), "Bit shuffling"),
+    "MMSortTwo"       -> (() => MMSortTwoTest.run(args2), "mask merge sort"),
+    "ConcatZeroStrip" -> (() => ConcatZeroStripTest.run(args2), "concat zero strip")
   )
 
   TestUtil.launch(args, targetmap)

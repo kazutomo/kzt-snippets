@@ -9,9 +9,9 @@ static void listdevices(void)
 	ze_result_t res;
 
 	// check level-zero/include/core/ze_driver.h
-	res = zeInit(ZE_INIT_FLAG_NONE);
+	res = zeInit(ZE_INIT_FLAG_GPU_ONLY);
 	if(res != ZE_RESULT_SUCCESS) {
-		printf("zeInit() failed. res=%d\n", res);
+		printf("zeInit() failed. res=%08x\n", res);
 		return;
 	}
 
@@ -67,11 +67,12 @@ static void listdevices(void)
 		    if (devprop.type == ZE_DEVICE_TYPE_GPU) {
 			printf("TYPE=GPU ");
 
+			/*
 			zet_sysman_handle_t sysmanh = (zet_sysman_handle_t)devh[di];
 			uint32_t pdomains = 0;
 			zetSysmanPowerGet(sysmanh, &pdomains, NULL);
 			printf("NPDOMAINS=%d\n", pdomains);
-
+			*/
 
 		    } else {
 			printf("TYPE=!GPU");

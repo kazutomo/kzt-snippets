@@ -28,9 +28,11 @@ class ConcatZeroStripUnitTester(c: ConcatZeroStrip) extends PeekPokeTester(c) {
 object ConcatZeroStripTest {
 
   def run(args: Array[String]) {
-    val nelems_in = 2
-    val dut = () => new ConcatZeroStrip(nelems_in)
+    val (args2, nelems_in) = TestUtil.getoptint(args, "nelem", 40)
+    val (args3, bw) = TestUtil.getoptint(args, "bw", 64)
+
+    val dut = () => new ConcatZeroStrip(nelems_in, bw)
     val tester = c => new ConcatZeroStripUnitTester(c)
-    TestUtil.driverhelper(args, dut, tester)
+    TestUtil.driverhelper(args3, dut, tester)
   }
 }
