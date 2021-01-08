@@ -5,53 +5,39 @@
 // 
 package foobar
 
-import chisel3.iotesters
-import chisel3.iotesters.{Driver, PeekPokeTester}
+import testutil._
 
 object TestMain extends App {
-  // component target list.
-  val targetlist = List(
-    "rev", "dynamic", "xnor"
+
+  if (args.length < 2) {
+    println("Usage: foobar.TestMain mode target [options]")
+    println("")
+    System.exit(1)
+  }
+
+  val args2 = args.drop(2)
+
+  // default params and component target list
+  // key is the name of target module
+  // value contains the run method function and the description
+  val targetmap = Map(
+    "Rev"             -> (() => RevTest.run(args2), "bit reverse"),
+    "Foo"             -> (() => FooTest.run(args2), "dummy"),
+    "Counter"         -> (() => CounterTest.run(args2), "simple counter"),
+    "NerdCounter"     -> (() => NerdCounterTest.run(args2), "nerd counter"),
+    "XnorPop"         -> (() => XnorPopTest.run(args2), "xnor pop"),
+    "Clz"             -> (() => ClzTest.run(args2), "leading zero count"),
+    "SRMem"           -> (() => SRMemTest.run(args2), "sync read ram"),
+    "ConcatVecs"      -> (() => ConcatVecsTest.run(args2), "concat two vecs"),
+    "BitMaskSorted"   -> (() => BitMaskSortedTest.run(args2), "bit mask sorted"),
+    "Gray"            -> (() => GrayTest.run(args2), "gray coding"),
+    "Fibonacci"       -> (() => FibonacciTest.run(args2), "Fibonacci number"),
+    // testing subcomponents of a compressor block
+    "NwayMux"         -> (() => NwayMuxTest.run(args2), "n-way MUX"),
+    "BitShuffle"      -> (() => BitShuffleTest.run(args), "Bit shuffling"),
+    "MMSortTwo"       -> (() => MMSortTwoTest.run(args2), "mask merge sort"),
+    "ConcatZeroStrip" -> (() => ConcatZeroStripTest.run(args2), "concat zero strip")
   )
 
-  val a = if (args.length > 0) args(0) else "rev"
-  val tmp = a.split(":")
-
-  val target = tmp(0)
-  val mode = if (tmp.length > 1) tmp(1) else "test"
-
-  mode match {
-    case "test" => {}
-    case "verilog" => {}
-    case _ => println(f"Warning: $mode is not a valid mode")
-  }
-
-  println(f"MODE=$mode TARGET=$target")
-
-  target match {
-    case "list" =>
-      println("*target list")
-      for (t <- targetlist)  println(t)
-
-    case "rev" =>
-      val bitwidth = 8
-      mode match {
-        case "verilog" => chisel3.Driver.execute(args, () => new Rev(bitwidth))
-        case _ => iotesters.Driver.execute(args, () => new Rev(bitwidth)) {c => new RevUnitTester(c) }
-      }
-
-    case "xnor" =>
-      val ninputs = 8
-      mode match {
-        case "verilog" => chisel3.Driver.execute(args, () => new XnorPop(ninputs))
-        case _ => iotesters.Driver.execute(args, () => new XnorPop(ninputs)) {c => new XnorPopUnitTester(c) }
-      }
-
-
-    case "dynamic" =>
-      mode match {
-        case "verilog" => chisel3.Driver.execute(args, () => new DynamicBus())
-        case _ => iotesters.Driver.execute(args, () => new DynamicBus()) {c => new DynamicBusUnitTester(c) }
-      }
-  }
+  TestUtil.launch(args, targetmap)
 }

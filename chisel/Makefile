@@ -1,26 +1,38 @@
 # Chisel sample makefile
 # written by Kazutomo Yoshii <kazutomo.yoshii@gmail.com>
 
-T=rev
+T=Foo
+M=test
 
 all:
-	@echo "Targets: verilog test simulate"
+	@echo "To run test:"
+	@echo "$ make TARGET"
+	@echo ""
+	@echo "To generate Verilog file"
+	@echo "$ make TARGET.v	"
+	@echo ""
+	@echo "To simulate using Verilator"
+	@echo "$ make TARGET.vcd"
+	@echo ""
+	@echo "To list target available modules:"
+	@echo "$ make list"
+	@echo ""
 
+% : %.scala
+	@./run.sh test $@
 
-# generate a Verilog fil
-v verilog:
-	sbt "test:runMain foobar.TestMain $T:verilog"
+%.v : %.scala
+	@./run.sh verilog $(@:.v=)
 
-# run Scala Unit test
-t test:
-	sbt "test:runMain foobar.TestMain $T"
+%.vcd : %.scala
+	@./run.sh simulate $(@:.vcd=)
+	@find -type f -name $@
 
-# simulate using Verilator
-s simulate:
-	sbt "test:runMain foobar.TestMain $T --backend-name verilator"
+l list:
+	@./run.sh list
 
 h help:
-	sbt "test:runMain foobar.TestMain --help"
+	@./run.sh test $T --help
 
 clean:
 	rm -rf project target test_run_dir generated *.class
