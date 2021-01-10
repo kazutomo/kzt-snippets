@@ -36,7 +36,8 @@ object TestMain extends App {
     "NwayMux"         -> (() => NwayMuxTest.run(args2), "n-way MUX"),
     "BitShuffle"      -> (() => BitShuffleTest.run(args), "Bit shuffling"),
     "MMSortTwo"       -> (() => MMSortTwoTest.run(args2), "mask merge sort"),
-    "ConcatZeroStrip" -> (() => ConcatZeroStripTest.run(args2), "concat zero strip")
+    "ConcatZeroStrip" -> (() => ConcatZeroStripTest.run(args2), "concat zero strip"),
+    "ShuffleMerge"    -> (() => ShuffleMergeTest.run(args2), "shuffle merge")
   )
 
   TestUtil.launch(args, targetmap)
