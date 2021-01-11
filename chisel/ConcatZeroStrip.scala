@@ -13,6 +13,7 @@ import chisel3.util._
 // concatenates two N-element inputs to one (N*2)-element output.
 
 class ConcatZeroStrip(val nelems:Int = 2, val bw:Int = 10) extends Module {
+  require( bw <= 64)
 
   val nelems_out = nelems * 2 // for convenience
 

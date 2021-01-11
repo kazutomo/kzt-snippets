@@ -10,6 +10,9 @@ import chisel3._
 // ShuffleMerge16
 class ShuffleMerge(val nelems:Int = 64, val elemsize:Int = 8) extends Module {
 
+  require(elemsize == 8) // for now
+  require(nelems >= 8 && nelems <= 64) // upper limit is 64.
+
   val nblocks = elemsize // the number of blocks after BitShuffle
   val bwblock = nelems   // the bitwidth of each block after BitShuffle
 
@@ -17,6 +20,10 @@ class ShuffleMerge(val nelems:Int = 64, val elemsize:Int = 8) extends Module {
 
   val io = IO(new Bundle {
     val in  = Input( Vec(nelems,  UInt(elemsize.W)))
+    val debugA = Output(Vec(4, UInt(bwblock.W)))
+    val debugB = Output(Vec(4, UInt(bwblock.W)))
+    val debugmask = Output(Vec(2, UInt(4.W)))
+
     val out = Output(Vec(nblocks, UInt(bwblock.W)))
     val outmask = Output(UInt(elemsize.W))
   })
@@ -45,6 +52,13 @@ class ShuffleMerge(val nelems:Int = 64, val elemsize:Int = 8) extends Module {
   concat2in(1).io.inAmask := msort(2).io.outMask
   concat2in(1).io.inB     := msort(3).io.out
   concat2in(1).io.inBmask := msort(3).io.outMask
+
+  io.debugmask(0) :=  concat2in(0).io.outmask
+  io.debugmask(1) :=  concat2in(1).io.outmask
+  for (i <- 0 until 4) {
+    io.debugA(i) := concat2in(0).io.out(i)
+    io.debugB(i) := concat2in(1).io.out(i)
+  }
 
   concat4in.io.inA     := concat2in(0).io.out
   concat4in.io.inAmask := concat2in(0).io.outmask

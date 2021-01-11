@@ -83,4 +83,28 @@ object TestUtil {
     if (verilogonly) chisel3.Driver.execute(args, dutgen)
     else           iotesters.Driver.execute(args, dutgen) {testergen}
   }
+
+  // convenient functions
+
+  def intToBinStr(v : Int,  nbits: Int) = f"%%0${nbits}d".format(v.toBinaryString.toInt)
+
+  def convLongToBinStr(v : Long,  nbits: Int) = {
+    val s = v.toBinaryString
+    val l = s.length
+    val leadingzeros = "0" * (if (nbits > l) nbits-l else 0)
+
+    leadingzeros + s
+  }
+
+  def convLongToHexStr(v : Long,  nbits: Int) = {
+    val s = v.toHexString
+    val l = s.length
+    val maxnhexd = nbits/4 + (if ((nbits%4)>0) 1 else 0)
+    val leadingzeros = "0" * (if (maxnhexd > l) maxnhexd-l else 0)
+
+    leadingzeros + s
+  }
+
+
 }
+
