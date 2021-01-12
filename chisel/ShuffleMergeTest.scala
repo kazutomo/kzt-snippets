@@ -17,32 +17,15 @@ class ShuffleMergeUnitTester(c: ShuffleMerge) extends PeekPokeTester(c) {
   val nblocks = elemsize // the number of blocks after BitShuffle
   val bwblock = nelems   // the bitwidth of each block after BitShuffle
 
-
-  for (i <- 0 until nelems ) poke(c.io.in(i), 255)
-
-
-  println("* debug")
-  val dm0= peek(c.io.debugmask(0)).toInt
-  val dm1= peek(c.io.debugmask(1)).toInt
-  println(f"mask: ${dm0}%x  ${dm1}%x")
-  for (i <- 0 until 4 ) {
-    val v = peek(c.io.debugA(i)).toInt
-    print(f"${v}%016x ")
-  }
-  println()
-  for (i <- 0 until 4 ) {
-    val v = peek(c.io.debugB(i)).toInt
-    print(f"${v}%016x ")
-  }
-  println()
-
+  for (i <- 0 until nelems ) poke(c.io.in(i), 1)
 
   println("* output")
-  val outmask = peek(c.io.outmask).toInt
-  println( "mask: " + TestUtil.intToBinStr(outmask, nblocks))
+  val outmask = peek(c.io.outmask).toLong
+  println( "mask: " + TestUtil.convLongToBinStr(outmask, nblocks))
   for (i <- 0 until nblocks ) {
-    val b = peek(c.io.out(i)).toInt
-    print(f"${b}%016x ") // XXX: replace 16 w/ bwblock/4
+    val v = peek(c.io.out(i)).toLong
+    print(TestUtil.convLongToHexStr(v, bwblock) + " ")
+
   }
   println()
 }
@@ -52,9 +35,12 @@ object ShuffleMergeTest {
 
   def run(args: Array[String]) {
 
-    val dut = () => new ShuffleMerge()
+    val (args2, nelems) = TestUtil.getoptint(args, "nelem", 64)
+    val (args3, bw) = TestUtil.getoptint(args2, "bw", 8)
+
+    val dut = () => new ShuffleMerge(nelems, bw)
     val tester = c => new ShuffleMergeUnitTester(c)
 
-    TestUtil.driverhelper(args, dut, tester)
+    TestUtil.driverhelper(args3, dut, tester)
   }
 }
