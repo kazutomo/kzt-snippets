@@ -72,7 +72,7 @@ class ConcatZeroStrip(val nelems:Int = 2, val bw:Int = 10) extends Module {
     // List.tabulate(n*2) { i =>  List.tabulate(n+1) {j => if (i<n) { if (j<(n-i)) i else j+i } else { if ((j+i) < n*2) j+i else n*2 -1} } }
 
   } .otherwise {
-    // simply wiring up
+    // no shift is required, simply wiring up. since shift 0 is direct connection, this is not needed?
     for (i <- 0 until nelems_out)  io.out(i) := inAB(i)
   }
 }

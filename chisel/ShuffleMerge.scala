@@ -51,7 +51,7 @@ class Reduction8(val nelems:Int = 64) extends Module {
   io.outmask := concat4in.io.outmask
 }
 
-class ShuffleMerge(val nelems:Int = 64, val elemsize:Int = 8) extends Module {
+class ShuffleMerge(val nelems:Int = 64, val elemsize:Int = 10) extends Module {
   val nblocks = elemsize // the number of blocks after BitShuffle
   val bwblock = nelems   // the bitwidth of each block after BitShuffle
 

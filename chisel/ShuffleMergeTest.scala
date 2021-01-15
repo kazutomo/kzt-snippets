@@ -36,7 +36,7 @@ object ShuffleMergeTest {
   def run(args: Array[String]) {
 
     val (args2, nelems) = TestUtil.getoptint(args, "nelem", 64)
-    val (args3, bw) = TestUtil.getoptint(args2, "bw", 8)
+    val (args3, bw) = TestUtil.getoptint(args2, "bw", 10)
 
     val dut = () => new ShuffleMerge(nelems, bw)
     val tester = c => new ShuffleMergeUnitTester(c)

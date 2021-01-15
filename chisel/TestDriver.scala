@@ -32,12 +32,13 @@ object TestMain extends App {
     "BitMaskSorted"   -> (() => BitMaskSortedTest.run(args2), "bit mask sorted"),
     "Gray"            -> (() => GrayTest.run(args2), "gray coding"),
     "Fibonacci"       -> (() => FibonacciTest.run(args2), "Fibonacci number"),
-    // testing subcomponents of a compressor block
+    // testing subcomponents of a compressor block. move out from here later
     "NwayMux"         -> (() => NwayMuxTest.run(args2), "n-way MUX"),
     "BitShuffle"      -> (() => BitShuffleTest.run(args), "Bit shuffling"),
     "MMSortTwo"       -> (() => MMSortTwoTest.run(args2), "mask merge sort"),
     "ConcatZeroStrip" -> (() => ConcatZeroStripTest.run(args2), "concat zero strip"),
-    "ShuffleMerge"    -> (() => ShuffleMergeTest.run(args2), "shuffle merge")
+    "ShuffleMerge"    -> (() => ShuffleMergeTest.run(args2), "shuffle merge"),
+    "Comp128"         -> (() => Comp128Test.run(args2), "comp128")
   )
 
   TestUtil.launch(args, targetmap)
