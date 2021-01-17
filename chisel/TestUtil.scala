@@ -86,6 +86,23 @@ object TestUtil {
 
   // convenient functions
 
+  def convIntegerToBinStr(v : BigInt,  nbits: Int) = {
+    val s = v.toString(2)
+    val l = s.length
+    val leadingzeros = "0" * (if (nbits > l) nbits-l else 0)
+    leadingzeros + s
+  }
+
+  def convIntegerToHexStr(v : BigInt,  nbits: Int) = {
+    val s = v.toString(16)
+    val l = s.length
+    val maxnhexd = nbits/4 + (if ((nbits%4)>0) 1 else 0)
+    val leadingzeros = "0" * (if (maxnhexd > l) maxnhexd-l else 0)
+
+    leadingzeros + s
+  }
+
+  // below are going to be obsolete
   def intToBinStr(v : Int,  nbits: Int) = f"%%0${nbits}d".format(v.toBinaryString.toInt)
 
   def convLongToBinStr(v : Long,  nbits: Int) = {
