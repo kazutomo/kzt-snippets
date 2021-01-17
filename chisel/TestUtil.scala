@@ -77,6 +77,63 @@ object TestUtil {
     return (args.patch(pos, Nil, 2),  args(pos+1).toInt)
   }
 
+  def getopts(args: Array[String], opts: Map[String, Int]) :
+      (Array[String], Map[String, Int]) = {
+
+    def nextopts(l: Array[String], m : Map[String, Int], res: Map[String, Int] ) :
+        (Array[String], Map[String, Int], Map[String, Int]) = {
+      /*
+      print("debug nextopts()")
+      print("l=")
+      l foreach {v => print(v + " ")}
+      println(" / m=" + m + " / res=" + res)
+       */
+      if (m.size > 0)  {
+        val (k,v) = m.head
+        if (l.length == 0) {
+          nextopts(l, m.tail, res ++ Map(k -> v))
+        } else {
+
+          val pos = l.indexOf("-" + k)
+
+          if (pos < 0 || pos+1 >= l.length) {
+            nextopts(l, m.tail, res ++ Map(k -> v))
+          } else {
+            nextopts(l.patch(pos, Nil, 2), m.tail, res ++ Map(k -> l(pos+1).toInt))
+          }
+        }
+      } else {
+        (l, m, res)
+      }
+    }
+    val (a, o, res) = nextopts(args, opts, Map[String, Int]())
+    (a, res)
+  }
+
+  def test_getopts() {
+    def runtest(args: Array[String], opts: Map[String,Int]) {
+      println("[Input]")
+      print("args: ")
+      args foreach {v => print(v + " ")}
+      println("\nopts: " + opts)
+
+      val (a, res) = getopts(args, opts)
+      println("[Output]")
+      print("args: ")
+      a foreach {v => print(v + " ")}
+      println("\nopts: " + res)
+      println()
+    }
+
+    runtest(Array(), Map())
+    runtest(Array("rest"), Map())
+    runtest(Array("rest"), Map("n" -> 3, "bw" -> 20))
+    runtest(Array("-n", "12", "rest"), Map("n" -> 3, "bw" -> 20))
+    runtest(Array("-z", "12", "rest"), Map("n" -> 3, "bw" -> 20))
+    runtest(Array("-n", "12", "-bw", "80"), Map("n" -> 3, "bw" -> 20))
+    runtest(Array("-n", "12", "-bw", "80", "rest"), Map("a" -> 11, "n" -> 3, "bw" -> 20))
+  }
+
   def driverhelper[T <: MultiIOModule](args: Array[String], dutgen : () => T, testergen: T => PeekPokeTester[T]) {
     // Note: is chisel3.Driver.execute a right way to generate
     // verilog, or better to use (new ChiselStage).emitVerilog()?
