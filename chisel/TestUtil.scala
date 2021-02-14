@@ -60,22 +60,6 @@ object TestUtil {
     targetmap(found)._1()
   }
 
-  // This function search an option that is a combination of an option
-  // string and an integer value in args (e.g., -len 10). opt excludes
-  // '-'.  dval is the default value. A calling example is
-  // getoptint(args, "len", 16). If '-len' is found, the returned args
-  // is the same as the input args and optval is dval. If found, the
-  // returned args does not include '-len INT' and optval is INT.
-  def getoptint(args: Array[String], opt: String, dval: Int) :
-      (Array[String], Int) = {
-
-    val hopt = "-" + opt
-    val pos = args.indexOf(hopt)
-
-    if(pos < 0 || pos+1 >= args.length) return (args, dval)
-
-    return (args.patch(pos, Nil, 2),  args(pos+1).toInt)
-  }
 
   def getopts(args: Array[String], opts: Map[String, Int]) :
       (Array[String], Map[String, Int]) = {
@@ -177,5 +161,22 @@ object TestUtil {
     val leadingzeros = "0" * (if (maxnhexd > l) maxnhexd-l else 0)
 
     leadingzeros + s
+  }
+
+  // This function search an option that is a combination of an option
+  // string and an integer value in args (e.g., -len 10). opt excludes
+  // '-'.  dval is the default value. A calling example is
+  // getoptint(args, "len", 16). If '-len' is found, the returned args
+  // is the same as the input args and optval is dval. If found, the
+  // returned args does not include '-len INT' and optval is INT.
+  def getoptint(args: Array[String], opt: String, dval: Int) :
+      (Array[String], Int) = {
+
+    val hopt = "-" + opt
+    val pos = args.indexOf(hopt)
+
+    if(pos < 0 || pos+1 >= args.length) return (args, dval)
+
+    return (args.patch(pos, Nil, 2),  args(pos+1).toInt)
   }
 }
