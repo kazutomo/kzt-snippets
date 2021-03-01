@@ -33,13 +33,8 @@ object TestMain extends App {
     "Gray"            -> (() => GrayTest.run(args2), "gray coding"),
     "Fibonacci"       -> (() => FibonacciTest.run(args2), "Fibonacci number"),
     "FindBitPos"      -> (() => FindBitPosTest.run(args2), "Find the position of the first high bit from LSB"),
-    // testing subcomponents of a compressor block. move out from here later
     "NwayMux"         -> (() => NwayMuxTest.run(args2), "n-way MUX"),
-    "BitShuffle"      -> (() => BitShuffleTest.run(args), "Bit shuffling"),
-    "MMSortTwo"       -> (() => MMSortTwoTest.run(args2), "mask merge sort"),
-    "ConcatZeroStrip" -> (() => ConcatZeroStripTest.run(args2), "concat zero strip"),
-    "ShuffleMerge"    -> (() => ShuffleMergeTest.run(args2), "shuffle merge"),
-    "Comp128"         -> (() => Comp128Test.run(args2), "comp128")
+    "BitShuffle"      -> (() => BitShuffleTest.run(args), "Bit shuffling")
   )
 
   TestUtil.launch(args, targetmap)
