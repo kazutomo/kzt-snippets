@@ -34,6 +34,7 @@ object TestMain extends App {
     "Fibonacci"       -> (() => FibonacciTest.run(args2), "Fibonacci number"),
     "FindBitPos"      -> (() => FindBitPosTest.run(args2), "Find the position of the first high bit from LSB"),
     "NwayMux"         -> (() => NwayMuxTest.run(args2), "n-way MUX"),
+    "Hold"            -> (() => HoldTest.run(args2), "Hold buffer"),
     "BitShuffle"      -> (() => BitShuffleTest.run(args), "Bit shuffling")
   )
 
