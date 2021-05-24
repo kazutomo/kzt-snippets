@@ -12,7 +12,7 @@ class NwayMuxUnitTester(c: NwayMux) extends PeekPokeTester(c) {
   def testnshift(n: Int)  {
     for (i <- 0 until nelems) poke(c.io.in(i), i)
     poke(c.io.nshift, n)
-
+    step(1)
     for (i <- 0 until nelems) {
       if ( (i + n) < nelems) expect(c.io.out(i), i+n)
       else expect(c.io.out(i), 0)
@@ -27,8 +27,8 @@ class NwayMuxUnitTester(c: NwayMux) extends PeekPokeTester(c) {
 object NwayMuxTest {
 
   def run(args: Array[String]) {
-    val nelems = 80
-    val bw = 64
+    val nelems = 10
+    val bw = 8
     val dut = () => new NwayMux(nelems, bw)
     val tester = c => new NwayMuxUnitTester(c)
     TestUtil.driverhelper(args, dut, tester)

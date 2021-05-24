@@ -35,8 +35,11 @@ object TestMain extends App {
     "FindBitPos"      -> (() => FindBitPosTest.run(args2), "Find the position of the first high bit from LSB"),
     "NwayMux"         -> (() => NwayMuxTest.run(args2), "n-way MUX"),
     "Hold"            -> (() => HoldTest.run(args2), "Hold buffer"),
-    "BitShuffle"      -> (() => BitShuffleTest.run(args), "Bit shuffling")
+    "BitShuffle"      -> (() => BitShuffleTest.run(args2), "Bit shuffling"),
+    "MaskedShift"     -> (() => MaskedShiftUnitTest.run(args2), "Masked shift"),
+    "PipelinedConcat" -> (() => PipelinedConcatUnitTest.run(args2), "Pipelined Concat")
   )
 
   TestUtil.launch(args, targetmap)
 }
+
