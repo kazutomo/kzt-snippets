@@ -60,6 +60,109 @@ object TestUtil {
     targetmap(found)._1()
   }
 
+
+  def getopts(args: Array[String], opts: Map[String, Int]) :
+      (Array[String], Map[String, Int]) = {
+
+    def nextopts(l: Array[String], m : Map[String, Int], res: Map[String, Int] ) :
+        (Array[String], Map[String, Int], Map[String, Int]) = {
+      /*
+      print("debug nextopts()")
+      print("l=")
+      l foreach {v => print(v + " ")}
+      println(" / m=" + m + " / res=" + res)
+       */
+      if (m.size > 0)  {
+        val (k,v) = m.head
+        if (l.length == 0) {
+          nextopts(l, m.tail, res ++ Map(k -> v))
+        } else {
+
+          val pos = l.indexOf("-" + k)
+
+          if (pos < 0 || pos+1 >= l.length) {
+            nextopts(l, m.tail, res ++ Map(k -> v))
+          } else {
+            nextopts(l.patch(pos, Nil, 2), m.tail, res ++ Map(k -> l(pos+1).toInt))
+          }
+        }
+      } else {
+        (l, m, res)
+      }
+    }
+    val (a, o, res) = nextopts(args, opts, Map[String, Int]())
+    (a, res)
+  }
+
+  def test_getopts() {
+    def runtest(args: Array[String], opts: Map[String,Int]) {
+      println("[Input]")
+      print("args: ")
+      args foreach {v => print(v + " ")}
+      println("\nopts: " + opts)
+
+      val (a, res) = getopts(args, opts)
+      println("[Output]")
+      print("args: ")
+      a foreach {v => print(v + " ")}
+      println("\nopts: " + res)
+      println()
+    }
+
+    runtest(Array(), Map())
+    runtest(Array("rest"), Map())
+    runtest(Array("rest"), Map("n" -> 3, "bw" -> 20))
+    runtest(Array("-n", "12", "rest"), Map("n" -> 3, "bw" -> 20))
+    runtest(Array("-z", "12", "rest"), Map("n" -> 3, "bw" -> 20))
+    runtest(Array("-n", "12", "-bw", "80"), Map("n" -> 3, "bw" -> 20))
+    runtest(Array("-n", "12", "-bw", "80", "rest"), Map("a" -> 11, "n" -> 3, "bw" -> 20))
+  }
+
+  def driverhelper[T <: MultiIOModule](args: Array[String], dutgen : () => T, testergen: T => PeekPokeTester[T]) {
+    // Note: is chisel3.Driver.execute a right way to generate
+    // verilog, or better to use (new ChiselStage).emitVerilog()?
+    if (verilogonly) chisel3.Driver.execute(args, dutgen)
+    else           iotesters.Driver.execute(args, dutgen) {testergen}
+  }
+
+  // convenient functions
+
+  def convIntegerToBinStr(v : BigInt,  nbits: Int) = {
+    val s = v.toString(2)
+    val l = s.length
+    val leadingzeros = "0" * (if (nbits > l) nbits-l else 0)
+    leadingzeros + s
+  }
+
+  def convIntegerToHexStr(v : BigInt,  nbits: Int) = {
+    val s = v.toString(16)
+    val l = s.length
+    val maxnhexd = nbits/4 + (if ((nbits%4)>0) 1 else 0)
+    val leadingzeros = "0" * (if (maxnhexd > l) maxnhexd-l else 0)
+
+    leadingzeros + s
+  }
+
+  // below are going to be obsolete
+  def intToBinStr(v : Int,  nbits: Int) = f"%%0${nbits}d".format(v.toBinaryString.toInt)
+
+  def convLongToBinStr(v : Long,  nbits: Int) = {
+    val s = v.toBinaryString
+    val l = s.length
+    val leadingzeros = "0" * (if (nbits > l) nbits-l else 0)
+
+    leadingzeros + s
+  }
+
+  def convLongToHexStr(v : Long,  nbits: Int) = {
+    val s = v.toHexString
+    val l = s.length
+    val maxnhexd = nbits/4 + (if ((nbits%4)>0) 1 else 0)
+    val leadingzeros = "0" * (if (maxnhexd > l) maxnhexd-l else 0)
+
+    leadingzeros + s
+  }
+
   // This function search an option that is a combination of an option
   // string and an integer value in args (e.g., -len 10). opt excludes
   // '-'.  dval is the default value. A calling example is
@@ -75,12 +178,5 @@ object TestUtil {
     if(pos < 0 || pos+1 >= args.length) return (args, dval)
 
     return (args.patch(pos, Nil, 2),  args(pos+1).toInt)
-  }
-
-  def driverhelper[T <: MultiIOModule](args: Array[String], dutgen : () => T, testergen: T => PeekPokeTester[T]) {
-    // Note: is chisel3.Driver.execute a right way to generate
-    // verilog, or better to use (new ChiselStage).emitVerilog()?
-    if (verilogonly) chisel3.Driver.execute(args, dutgen)
-    else           iotesters.Driver.execute(args, dutgen) {testergen}
   }
 }

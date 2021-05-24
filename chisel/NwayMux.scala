@@ -14,13 +14,30 @@ class NwayMux(val n:Int = 80, val bw:Int = 64) extends Module {
   for (i <- 0 until n) in_ext(i)  := io.in(i)
   in_ext(n) := 0.U
 
-  def createMuxLookupList(muxid : Int) : List[Int] =
-    List.tabulate(n) {j => if ((muxid + j < n)) muxid + j else n}
+  val impl = 0 // implementaion selector
+               // # of lines in generated verilog codes
+               // impl=0  13046
+               // impl=1   6726
 
-  for (i <- 0 until n)  {
-    val lookuplist = createMuxLookupList(i)
-    val lookups = lookuplist.zipWithIndex.map {case (wireidx, sel) => sel.U -> in_ext(wireidx)}
+  if (impl == 0) {
+    def createMuxLookupList(muxid : Int) : List[Int] =
+      List.tabulate(n) {j => if ((muxid + j < n)) muxid + j else n}
 
-    io.out(i) := MuxLookup(io.nshift, in_ext(i), lookups) // (idx, default, selecter_array)
+    for (i <- 0 until n)  {
+      val lookuplist = createMuxLookupList(i)
+      val lookups = lookuplist.zipWithIndex.map {case (wireidx, sel) => sel.U -> in_ext(wireidx)}
+
+      io.out(i) := MuxLookup(io.nshift, in_ext(i), lookups) // (idx, default, selecter_array)
+    }
+  } else {
+    def createMuxLookupList(muxid : Int) : List[Int] =
+      List.tabulate(n-muxid) {j => muxid + j}
+
+    for (i <- 0 until n)  {
+      val lookuplist = createMuxLookupList(i)
+      val lookups = lookuplist.zipWithIndex.map {case (wireidx, sel) => sel.U -> in_ext(wireidx)}
+
+      io.out(i) := MuxLookup(io.nshift, in_ext(n), lookups) // (idx, default, selecter_array)
+    }
   }
 }
