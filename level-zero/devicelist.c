@@ -135,7 +135,7 @@ static void listdevices(void)
 	    }
 	    printf("\nPower: %u domain(s)\n", npwrdoms);
 
-	    zes_pwr_handle_t *pwrh;
+	    zes_pwr_handle_t *pwrh = NULL;
 	    if (npwrdoms > 0) {
 		pwrh = malloc( sizeof(zes_pwr_handle_t) * npwrdoms);
 		res = zesDeviceEnumPowerDomains(sysmanh, &npwrdoms, pwrh);
@@ -145,9 +145,6 @@ static void listdevices(void)
 		}
 
 		for (int di =0; di < npwrdoms; di++) {
-		    double startsec = gettime();
-		    double pt = 0.0;
-		    double pe = -1;
 		    ze_result_t res;
 
 		    printf("  pwrdom=%d\n", di);
@@ -199,23 +196,6 @@ static void listdevices(void)
 			printf("    zesPowerGetEnergyThreshold: unsupported\n");
 		    }
 
-		    // XXX: record to a file
-		    for (int k=0; k<2; k++) {
-			zes_power_energy_counter_t ecounter;
-			if (zesPowerGetEnergyCounter(pwrh[di], &ecounter) == ZE_RESULT_SUCCESS) {
-			    if (pe<0.0) {
-				pe = ecounter.energy;
-				pt = gettime();
-			    } else {
-				double dt = gettime() - pt;
-				uint64_t ects = ecounter.timestamp; // usec
-				double de = ecounter.energy - pe;
-				//printf("\tpowerreadtest: %lu [S] %lf [S]  %lf [W]\n", ects, gettime()-startsec, de/dt/1000.0/1000.0);
-				printf("    powerreadtest: %.1lf [W]\n", de/dt/1000.0/1000.0);
-			    }
-			}
-			usleep(100*1000);
-		    }
 		}
 	    }
 
@@ -223,13 +203,14 @@ static void listdevices(void)
 	    //
 	    //
 	    uint32_t nfreqdoms = 0;
+	    zes_freq_handle_t *freqh = NULL;
+
 	    res = zesDeviceEnumFrequencyDomains(sysmanh, &nfreqdoms ,NULL);
 	    if (res != ZE_RESULT_SUCCESS) {
 		_ZE_ERROR_MSG("zesDeviceEnumFrequencyDomains", res);
 		//return;
 	    } else {
 		printf("Frequency: %u domain(s)\n", nfreqdoms);
-		zes_freq_handle_t *freqh;
 
 		freqh = malloc( sizeof(zes_freq_handle_t) * nfreqdoms);
 		res = zesDeviceEnumFrequencyDomains(sysmanh, &nfreqdoms, freqh);
@@ -249,25 +230,19 @@ static void listdevices(void)
 				fprop.min, fprop.max);
 			}
 
-			zes_freq_state_t fstat;
-			res = zesFrequencyGetState(freqh[di], &fstat);
-			if (res == ZE_RESULT_SUCCESS) {
-			    printf("    freqreadtest: req=%.1lf [MHz] efficient=%.1lf [MHz] actual=%.1lf\n",
-				fstat.request, fstat.efficient, fstat.actual);
-			}
 		    }
 		}
 	    }
 
 	    //
 	    uint32_t ntempsensors = 0;
+	    zes_temp_handle_t *temph = NULL;
 	    res = zesDeviceEnumTemperatureSensors(sysmanh, &ntempsensors ,NULL);
 	    if (res != ZE_RESULT_SUCCESS) {
 		    _ZE_ERROR_MSG("zesDeviceEnumTemperatureSensors", res);
 		//return;
 	    } else {
 		printf("Temperature: %u sensor(s)\n", ntempsensors);
-		zes_temp_handle_t *temph;
 
 		temph = malloc( sizeof(zes_temp_handle_t) * ntempsensors);
 		res = zesDeviceEnumTemperatureSensors(sysmanh, &ntempsensors, temph);
@@ -309,11 +284,59 @@ static void listdevices(void)
 	    }
 
 
+	    printf("\nTest monitoring features\n");
+	    if(pwrh) {
+		for (int di =0; di < npwrdoms; di++) {
+		    double startsec = gettime();
+		    double pt = 0.0;
+		    double pe = -1;
+		    // XXX: record to a file
+		    for (int k=0; k<2; k++) {
+			zes_power_energy_counter_t ecounter;
+			if (zesPowerGetEnergyCounter(pwrh[di], &ecounter) == ZE_RESULT_SUCCESS) {
+			    if (pe<0.0) {
+				pe = ecounter.energy;
+				pt = gettime();
+			    } else {
+				double dt = gettime() - pt;
+				uint64_t ects = ecounter.timestamp; // usec
+				double de = ecounter.energy - pe;
+				//printf("\tpowerreadtest: %lu [S] %lf [S]  %lf [W]\n", ects, gettime()-startsec, de/dt/1000.0/1000.0);
+				printf("    power%d: %.1lf [W]\n", di, de/dt/1000.0/1000.0);
+			    }
+			}
+			usleep(100*1000);
+		    }
+		}
+	    }
+	    if(freqh) {
+		for (int di =0; di < nfreqdoms; di++) {
+		    zes_freq_state_t fstat;
+		    res = zesFrequencyGetState(freqh[di], &fstat);
+		    if (res == ZE_RESULT_SUCCESS) {
+			printf("    freq%d: req=%.1lf [MHz] efficient=%.1lf [MHz] actual=%.1lf\n", di,
+			    fstat.request, fstat.efficient, fstat.actual);
+		    }
+		}
+	    }
+	    if(temph) {
+		for (int di =0; di < ntempsensors; di++) {
+		    double t;
+		    res = zesTemperatureGetState(temph[di], &t);
+		    if (res == ZE_RESULT_SUCCESS) {
+			if (t>200.) {
+			    printf("    temp%d: ----- [C]\n", di);
+			} else {
+			    printf("    temp%d: %.2lf [C]\n", di, t);
+			}
+		    }
+		}
+
+	    }
+
 	}
     }
-    printf("done\n");
-
-
+    //printf("done\n");
 }
 
 int main(int argc, char *argv[])
