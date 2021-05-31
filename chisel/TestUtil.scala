@@ -1,6 +1,6 @@
 package testutil
 
-import chisel3.MultiIOModule
+import chisel3.MultiIOModule  // added to upgrade to 3.2
 import chisel3.iotesters
 import chisel3.iotesters.{Driver, PeekPokeTester}
 import chisel3.experimental._
@@ -121,8 +121,7 @@ object TestUtil {
   }
 
   def driverhelper[T <: MultiIOModule](args: Array[String], dutgen : () => T, testergen: T => PeekPokeTester[T]) {
-    // Note: is chisel3.Driver.execute a right way to generate
-    // verilog, or better to use (new ChiselStage).emitVerilog()?
+    // Use chisel3.stage.ChiselStage.execute. This will be removed in 3.4.
     if (verilogonly) chisel3.Driver.execute(args, dutgen)
     else           iotesters.Driver.execute(args, dutgen) {testergen}
   }
