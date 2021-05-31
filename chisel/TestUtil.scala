@@ -1,8 +1,10 @@
 package testutil
 
+import chisel3.MultiIOModule
 import chisel3.iotesters
 import chisel3.iotesters.{Driver, PeekPokeTester}
 import chisel3.experimental._
+
 
 
 object TestUtil {
