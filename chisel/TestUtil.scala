@@ -5,7 +5,7 @@ import chisel3.iotesters
 import chisel3.iotesters.{Driver, PeekPokeTester}
 import chisel3.experimental._
 
-
+import chisel3.stage.ChiselStage // >= 3.2.0
 
 object TestUtil {
 
@@ -121,8 +121,10 @@ object TestUtil {
   }
 
   def driverhelper[T <: MultiIOModule](args: Array[String], dutgen : () => T, testergen: T => PeekPokeTester[T]) {
-    // Use chisel3.stage.ChiselStage.execute. This will be removed in 3.4.
-    if (verilogonly) chisel3.Driver.execute(args, dutgen)
+    if (verilogonly) {
+      chisel3.Driver.execute(args, dutgen) // worked in 3.1
+        //(new ChiselStage).emitVerilog(dutgen)
+    }
     else           iotesters.Driver.execute(args, dutgen) {testergen}
   }
 
