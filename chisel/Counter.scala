@@ -12,8 +12,10 @@ class Counter(val max:Int = 10) extends Module {
 
   val cntReg = RegInit(0.U(nbits.W))
 
-  cntReg := Mux(cntReg === max.U, 0.U,
-    Mux(io.enable, cntReg + 1.U, cntReg))
+  cntReg := Mux(io.enable,
+    Mux(cntReg === max.U, 0.U, cntReg + 1.U),
+    cntReg
+  )
 
   io.out := cntReg
 }

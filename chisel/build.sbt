@@ -33,11 +33,13 @@ version := "0.2.0"
 
 name := "chisel-snippets"
 
-scalaVersion := "2.11.12"
+//scalaVersion := "2.11.12"
+scalaVersion := "2.12.12"
 
 crossScalaVersions := Seq("2.11.12", "2.12.4")
 
 scalacOptions ++= Seq("-deprecation", "-feature", "-unchecked", "-language:reflectiveCalls")
+
 
 // Provide a managed dependency on X if -DXVersion="" is supplied on the command line.
 // The following are the current "release" versions.
@@ -47,10 +49,10 @@ val defaultVersions = Map(
 //  "chisel-iotesters" -> "1.2.+"
 //  "chisel3" -> "3.2.+",
 //  "chisel-iotesters" -> "1.3.+"
-  "chisel3" -> "3.3.+",
-  "chisel-iotesters" -> "1.4.+"
-//  "chisel3" -> "3.4.+",
-//  "chisel-iotesters" -> "1.5.+"
+//  "chisel3" -> "3.3.+",
+//  "chisel-iotesters" -> "1.4.+"
+  "chisel3" -> "3.4.+",
+  "chisel-iotesters" -> "1.5.+"
   )
 
 libraryDependencies ++= (Seq("chisel3","chisel-iotesters").map {

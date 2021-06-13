@@ -31,6 +31,7 @@ class ClzParam(nb: Int = 16) extends Module {
   val half = nb >> 1
   val lognb = log2Ceil(nb)
 
+  // Check https://github.com/chipsalliance/chisel3/pull/1550
   val io = IO(new Bundle {
     // input data
     val in  = Input(UInt(nb.W))
