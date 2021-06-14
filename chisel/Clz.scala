@@ -32,7 +32,8 @@ class ClzParam(nb: Int = 16) extends Module {
   val lognb = log2Ceil(nb)
 
   // Check https://github.com/chipsalliance/chisel3/pull/1550
-  val io = IO(new Bundle {
+  class ClzParamIntf extends Bundle {
+    //val io = IO(new Bundle {
     // input data
     val in  = Input(UInt(nb.W))
     // the number of the leading zeros (Nlz) of the input data, which
@@ -40,7 +41,9 @@ class ClzParam(nb: Int = 16) extends Module {
     // 16-bit input, the number of the leading-zeros is between 0 and
     // 16 (all bits are zeros), which requires 5 bits.
     val out = Output(UInt((lognb+1).W))
-  })
+    //})
+  }
+  val io : ClzParamIntf = IO(new ClzParamIntf)
 
   // divide 'in' into two blocks: c0 (lower half) and c1 (upper half)
   // when the half size is 2, instantiate Clz2(), otherwise
