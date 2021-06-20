@@ -25,13 +25,15 @@ class FooUnitTester(c: Foo) extends PeekPokeTester(c) {
 object FooTest {
 
   def run(args: Array[String]) {
-    val (args2, bwval) = TestUtil.getoptint(args, "bw", 8)
+    val (argsrest, opt) = TestUtil.getopts(args,
+      Map("bw" -> "16") )
 
+    val bwval = opt("bw").toInt
     println("FooTest: bitwidth=" + bwval)
 
     val dut = () => new Foo(bwval)
     val tester = c => new FooUnitTester(c)
 
-    TestUtil.driverhelper(args2, dut, tester)
+    TestUtil.driverhelper(argsrest, dut, tester)
   }
 }

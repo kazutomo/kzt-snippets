@@ -20,8 +20,61 @@ class Clz2() extends Module {
   }
 }
 
+class ClzParam(val nb: Int = 16) extends Module {
+
+  def ispow2(x : Int) : Boolean = (x!=0) && (x & (x-1)) == 0
+
+  assert( (nb>=2) && ispow2(nb) )
+
+  val lognb = log2Ceil(nb)
+
+  val io = IO(new Bundle {
+    val in  = Input(UInt(nb.W))
+    // the number of the leading zeros (Nlz) of the input data, which
+    // requires (log2Ceil(nb)+1) bits to hold the number. e.g., a
+    // 16-bit input, the number of the leading-zeros is between 0 and
+    // 16 (all bits are zeros), which requires 5 bits.
+    val out = Output(UInt((lognb+1).W))
+  })
+
+  // When nb is 2, do a simple lookup. The intput "00" has two leading
+  // zero, the input "01" has one leading zero, and the rest has no
+  // leading zero.
+  if (nb==2) io.out := MuxLookup(io.in, 0.U, Array(0.U -> 2.U, 1.U -> 1.U))
+  else {
+    // divide 'in' into two blocks: c0 (lower half) and c1 (upper half).
+    val half = nb >> 1
+    val c0 = Module(new ClzParam(half))
+    val c1 = Module(new ClzParam(half))
+    c0.io.in := io.in(half-1, 0)
+    c1.io.in := io.in(nb-1  , half)
+
+    io.out := 0.U((lognb+1).W)
+
+    // If both two divided blocks only contain zero or MSB of the
+    // counting number of both blocks are one, the original input 'in'
+    // should only contain zero.
+    when( c1.io.out(lognb-1) && c0.io.out(lognb-1) ) {
+      // All-zero case. simple set MSB of io.out one.
+      io.out := Cat("b1".U, 0.U(lognb.W))
+    } .elsewhen( c1.io.out(lognb-1) === 0.U ) {
+      // the upper half contains one or more 1, so 'io.out' is simply
+      // Nlz of the upper half, regardless of the content of the lower
+      // half.
+      io.out := Cat("b0".U, c1.io.out)
+    } .elsewhen( c1.io.out(lognb-1) === 1.U ) {
+      // the upper half only contain zero while the lower half is not
+      // all-zero. 'io.out' is the upper half Nlz plus the lower half
+      // Nlz.
+      io.out := Cat("b01".U, c0.io.out(lognb-2,0))
+    }
+  }
+}
+
+
 // A parameterized version of counting leading-zeros
 // note: nb is the power of two number that is greater-equal than 4.
+/*
 class ClzParam(nb: Int = 16) extends Module {
 
   def ispow2(x : Int) : Boolean = (x!=0) && (x & (x-1)) == 0
@@ -73,7 +126,7 @@ class ClzParam(nb: Int = 16) extends Module {
     io.out := Cat("b01".U, c0.io.out(lognb-2,0))
   }
 }
-
+ */
 
 //
 // below are old hard-coded version. unused.

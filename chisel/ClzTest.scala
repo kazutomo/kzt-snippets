@@ -6,7 +6,7 @@ import testutil._
 
 class ClzUnitTester(c: ClzParam) extends PeekPokeTester(c) {
 
-  val nb = 16 // c.nb // the size of input data in bits
+  val nb = c.nb // the size of input data in bits
 
   val seed = 123
   val rn = new scala.util.Random(seed)
@@ -42,10 +42,13 @@ class ClzUnitTester(c: ClzParam) extends PeekPokeTester(c) {
 object ClzTest {
 
   def run(args: Array[String]) {
-    val nb = 16
+    val (argsrest, opt) = TestUtil.getopts(args,
+      Map("n" -> "8") )
+
+    val nb = opt("n").toInt
     val dut = () => new ClzParam(nb)
     val tester = c => new ClzUnitTester(c)
 
-    TestUtil.driverhelper(args, dut, tester)
+    TestUtil.driverhelper(argsrest, dut, tester)
   }
 }
