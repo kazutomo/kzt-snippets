@@ -13,8 +13,7 @@ class FooUnitTester(c: Foo) extends PeekPokeTester(c) {
 
     poke(c.io.in, i)
     
-    if (i>0)  expect(c.io.out, i-1)
-    else      expect(c.io.out, 0)
+    val ret = if (i>0)  expect(c.io.out, i-1)  else  expect(c.io.out, 0)
 
     printf("%08d => %08d\n",  i, peek(c.io.out).toInt)
 

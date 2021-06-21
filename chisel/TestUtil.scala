@@ -178,6 +178,7 @@ object TestUtil {
   // getoptint(args, "len", 16). If '-len' is found, the returned args
   // is the same as the input args and optval is dval. If found, the
   // returned args does not include '-len INT' and optval is INT.
+  @deprecated("This function will be removed soon","06-20-2021")
   def getoptint(args: Array[String], opt: String, dval: Int) :
       (Array[String], Int) = {
 

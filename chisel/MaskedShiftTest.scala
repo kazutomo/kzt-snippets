@@ -70,12 +70,19 @@ class MaskedShiftUnitTester(c: MaskedShift) extends PeekPokeTester(c) {
 
 object MaskedShiftUnitTest {
   def run(args: Array[String]) {
-    val (args2, shiftbit) = TestUtil.getoptint(args,  "s", 0)
-    val (args3, maxlen)   = TestUtil.getoptint(args2, "n", 10)
-    val (args4, bw)       = TestUtil.getoptint(args3, "bw", 8)
+    val (argsrest, opt) = TestUtil.getopts(args,
+      Map("s"->"0", "n" -> "10", "bw" -> "8"))
+
+    val shiftbit = opt("s").toInt
+    val maxlen = opt("n").toInt
+    val bw = opt("bw").toInt
+
+    //val (args2, shiftbit) = TestUtil.getoptint(args,  "s", 0)
+    //val (args3, maxlen)   = TestUtil.getoptint(args2, "n", 10)
+    //val (args4, bw)       = TestUtil.getoptint(args3, "bw", 8)
 
     val dut = () => new MaskedShift(shiftbit, maxlen, bw, maxlen)
     val tester = c => new MaskedShiftUnitTester(c)
-    TestUtil.driverhelper(args4, dut, tester)
+    TestUtil.driverhelper(argsrest, dut, tester)
   }
 }
